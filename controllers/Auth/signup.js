@@ -5,6 +5,7 @@ const nodemailer = require("nodemailer");
 const NodeCache = require('node-cache');
 const Cache = new NodeCache();
 const sendOTP = require('../../config/sendOTP');
+const createNewUser = require('../../services/createNewUser')
 
 exports.signup = async (req, res) => {
     try{
@@ -144,26 +145,21 @@ exports.signupVerify = async(req,res) => {
                     else{
                         userData.mobile = username;
                     }
-        
-
-                    users.create(userData)
-                    .then((result) => {
-                      if (result) {
-        
-                        let token = jwt.sign({userID:result._id},process.env.JWT_KEY,{ expiresIn: "30d" })
-        
-                        return res.status(200).json({
-                          error: false,
-                          token: token,
-                          message: "User created successfully!",
-                        });
+                    
+                    let newUserData = {
+                        user:userData,
+                        role:'user',
+                        profile:userData
                       }
+        
+                    createNewUser(newUserData).then((response)=>{
+                        return res.status(response.status).json(response);
                     })
-                    .catch((error) => {
-                        res.status(400).json({
-                          error:true,
-                          message: "Error Creating new user.",
-                        });
+                    .catch((error)=>{
+                      res.status(400).json({
+                        error:true,
+                        message: "Error creating new user.",
+                      });
                     });
                 }
               })

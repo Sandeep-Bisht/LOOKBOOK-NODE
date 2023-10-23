@@ -7,6 +7,6 @@ const userSchema = new Schema({
     password: { type: String},
     usertype:{type: String, require: true},
     status: { type: Boolean},
-},{timestamps: true} )
+},{timestamps: true})
 
 module.exports = model('users',userSchema);

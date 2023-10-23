@@ -2,20 +2,20 @@ require('dotenv').config();
 var jwt = require('jsonwebtoken');
 let users = require('../../models/Users');
 const axios = require('axios');
+const createNewUser = require('../../services/createNewUser')
 
-exports.facebookSignup = async (req, res) => {
+exports.facebookSignup = (req, res) => {
     try{
         const { userID, accessToken } = req.body
 
         if(userID && accessToken){
-            // https://graph.facebook.com/${userID}?fields=id,name,email,picture&access_token=${accessToken}
-              axios.get(`https://graph.facebook.com/me?access_token=${accessToken}`)
+            // https://graph.facebook.com/me?access_token=${accessToken}
+              axios.get(`https://graph.facebook.com/${userID}?fields=id,name,email,picture&access_token=${accessToken}`)
               .then((response) => {
                 if (response.status === 200) {
-
                   const userData = response.data;
-
                   users.findOne({facebookID: userData.id })
+
                   .then((result)=>{
                     if(result){
                         let token = jwt.sign({userID:result._id},process.env.JWT_KEY,{ expiresIn: "30d" })
@@ -26,30 +26,27 @@ exports.facebookSignup = async (req, res) => {
                                         });
                     }
                     else{
-                        let newUserData = {usertype:'facebook',facebookID: userData.id};
     
-                        users.create(newUserData)
-                        .then((result) => {
-                          if (result) {
-            
-                            let token = jwt.sign({userID:result._id},process.env.JWT_KEY,{ expiresIn: "30d" })
-            
-                            return res.status(200).json({
-                              error: false,
-                              token: token,
-                              message: "User created successfully!",
-                            });
-                          }
+                        let newUserData = {
+                          user:{usertype:'facebook',facebookID: userData.id},
+                          role:'user',
+                          profile:{fullName:userData.name}
+                        }
+
+                        createNewUser(newUserData).then((response)=>{
+                            return res.status(response.status).json(response);
                         })
-                        .catch((error) => {
-                            res.status(400).json({
-                              error:true,
-                              message: "Error Creating new user.",
-                            });
-                        });
+                        .catch((error)=>{
+                          res.status(400).json({
+                            error:true,
+                            message: "Error creating new user.",
+                          });
+                        })
+
                     }
                   })
                   .catch((err)=>{
+                    console.log(err,'error is this')
                     res.status(400).json({
                         error:true,
                         message: "Error Finding user.",

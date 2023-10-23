@@ -6,16 +6,16 @@ const AddressSchema = new Schema({
     user_id : {
         required : true,
         type: Schema.Types.ObjectId, 
-        ref : "Profile"
+        ref : "users"
     },
     address : {
-        type : Array,
+        type : String,
         required : true
     }
 
 }, {timestamps : true})
 
 
-const model = moongoose.model("UserAddress", AddressSchema)
+const model = moongoose.model("address", AddressSchema)
 module.exports = model;
 

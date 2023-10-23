@@ -2,6 +2,7 @@ require('dotenv').config();
 var jwt = require('jsonwebtoken');
 let users = require('../../models/Users');
 const { OAuth2Client } = require('google-auth-library');
+const createNewUser = require('../../services/createNewUser')
 
 // initialize oathclient
 const oAuth2Client = new OAuth2Client(
@@ -18,6 +19,7 @@ exports.googleSignup = async (req, res) => {
             
             if(tokens.id_token){
                 const userData = jwt.decode(tokens.id_token);
+                console.log('google user data',userData)
                 users.findOne({email: userData.email })
                   .then((result)=>{
                     if(result){
@@ -29,27 +31,22 @@ exports.googleSignup = async (req, res) => {
                                         });
                     }
                     else{
-                        let newUserData = {usertype:'google',email: userData.email};
-    
-                        users.create(newUserData)
-                        .then((result) => {
-                          if (result) {
-            
-                            let token = jwt.sign({userID:result._id},process.env.JWT_KEY,{ expiresIn: "30d" })
-            
-                            return res.status(200).json({
-                              error: false,
-                              token: token,
-                              message: "User created successfully!",
-                            });
-                          }
+
+                        let newUserData = {
+                          user:{usertype:'google',email: userData.email},
+                          role:'user',
+                          profile:{fullName:userData.name,email: userData.email}
+                        }
+
+                        createNewUser(newUserData).then((response)=>{
+                            return res.status(response.status).json(response);
                         })
-                        .catch((error) => {
-                            res.status(400).json({
-                              error:true,
-                              message: "Error Creating new user.",
-                            });
-                        });
+                        .catch((error)=>{
+                          res.status(400).json({
+                            error:true,
+                            message: "Error creating new user.",
+                          });
+                        })
                     }
                   })
                   .catch((err)=>{
