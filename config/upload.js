@@ -1,11 +1,12 @@
 const imagekit = require('imagekit');
 const path = require('path');
+require('dotenv').config();
 
 // Initialize the ImageKit.io client with your API Key and API Secret
 const imagekitClient = new imagekit({
-    publicKey: 'public_S3lkZ5ky2dIUSvv4MZ97kFtyl7k=',
-    privateKey: 'private_IX761sPhEppF87zaeG7JV1jhMw8=',
-    urlEndpoint: 'https://ik.imagekit.io/lookbook/',
+    publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+    privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
+    urlEndpoint: process.env.IMAGEKIT_ENDPOINT,
   });
 
 
