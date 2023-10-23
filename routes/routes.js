@@ -7,6 +7,7 @@ const upload = multer({ storage });
 
 const AuthRoutes = require('../controllers/Auth/routes')
 const UsersRoutes = require('../controllers/Users/routes');
+
 const { uploadFiles } = require("../config/upload");
 
 router.use('/auth',AuthRoutes);
