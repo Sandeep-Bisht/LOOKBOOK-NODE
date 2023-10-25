@@ -9,8 +9,8 @@ const ProductsSchema = new Schema({
         unique:true, 
         sparse: true
     },
-    icon: String,
-    image: String,
+    icon: JSON,
+    image: JSON,
     createdBy: {
         required : true,
         type: Schema.Types.ObjectId, 
