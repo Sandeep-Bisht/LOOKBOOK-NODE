@@ -46,7 +46,6 @@ exports.facebookSignup = (req, res) => {
                     }
                   })
                   .catch((err)=>{
-                    console.log(err,'error is this')
                     res.status(400).json({
                         error:true,
                         message: "Error Finding user.",

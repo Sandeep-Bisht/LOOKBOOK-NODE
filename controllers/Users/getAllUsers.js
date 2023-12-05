@@ -2,7 +2,6 @@ require('dotenv').config();
 
 exports.getAllUsers = async (req, res) => {
     try{
-        console.log(req.user,'request user is this')
         return res.send("get all user called.")
     }
     catch(err){

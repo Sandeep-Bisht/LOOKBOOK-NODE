@@ -10,17 +10,6 @@ const imagekitClient = new imagekit({
   });
 
 
-exports.uploadFiles = async (req,res) =>{
-    try {
-        const response = await this.uploadFileToImagekit(req);
-        res.json(response);
-    } catch (error) {
-
-      console.error('Error uploading image:', error);
-      res.status(500).json({ error: 'Error uploading image' });
-    }
-}
-
 exports.uploadFileToImagekit = async (req) =>{
     try{
         if(req.file && req.file.buffer){
