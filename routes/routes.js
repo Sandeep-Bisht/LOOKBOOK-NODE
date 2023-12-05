@@ -14,5 +14,4 @@ router.use('/service',ServicesRoutes);
 router.use('/product',ProductsRoutes)
 router.use('/blog',BlogsRoutes);
 
-
 module.exports = router
