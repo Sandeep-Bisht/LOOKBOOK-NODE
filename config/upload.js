@@ -2,6 +2,14 @@ const imagekit = require('imagekit');
 const path = require('path');
 require('dotenv').config();
 
+const multer = require('multer');
+
+// Set up multer to handle file uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+exports.upload = upload;
+
 // Initialize the ImageKit.io client with your API Key and API Secret
 const imagekitClient = new imagekit({
     publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
@@ -12,6 +20,7 @@ const imagekitClient = new imagekit({
 
 exports.uploadFileToImagekit = async (req) =>{
     try{
+
         if(req.file && req.file.buffer){
             const fileBuffer = req.file.buffer;
             const originalFileName = req.file.originalname;
@@ -46,6 +55,52 @@ exports.uploadFileToImagekit = async (req) =>{
     }
     catch(err){
         console.log(err,"erro uploading file in image kit.")
+        return null;
+    }
+}
+
+exports.uploadFilesToImagekit = async (req) => {
+    try {
+        if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+            const responses = [];
+
+            for (const file of req.files) {
+                if (file.buffer) {
+                    const fileBuffer = file.buffer;
+                    const originalFileName = file.originalname;
+                    const fileExtension = path.extname(originalFileName).toLowerCase();
+                    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.svg', '.gif', '.webp', '.mp4', '.avi', '.mov'];
+
+                    if (allowedExtensions.includes(fileExtension)) {
+                        try {
+                            const response = await imagekitClient.upload({
+                                file: fileBuffer,
+                                fileName: `${Date.now()}--${originalFileName}`, // Provide a unique filename
+                            });
+                            responses.push({ fieldName: file.fieldname, response });
+                        } catch (err) {
+                            console.log(`Error uploading ${originalFileName} to ImageKit: ${err}`);
+                        }
+                    } else {
+                        console.log(`File type not allowed to upload on ImageKit: ${originalFileName}`);
+                    }
+                } else {
+                    console.log('Invalid file found while uploading to ImageKit');
+                }
+            }
+
+            if (responses.length === 0) {
+                console.log('No valid files to upload.');
+                return null;
+            }
+
+            return responses;
+        } else {
+            console.log('No files found while uploading to ImageKit.');
+            return null;
+        }
+    } catch (err) {
+        console.log('Error uploading files to ImageKit:', err);
         return null;
     }
 }

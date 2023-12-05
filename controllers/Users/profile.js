@@ -1,10 +1,21 @@
 require('dotenv').config();
+const { uploadFilesToImagekit } = require('../../config/upload');
 const Profile = require('../../models/profile');
 const updateProfile = require('../../services/updateProfile');
 
 exports.setProfile = async (req, res) => {
     try{
-        updateProfile({user:req.user,profile:req.body}).then((response)=>{
+        var data = {...req.body}
+
+        if (req.files) {
+            let fileUploadResponse = await uploadFilesToImagekit(req);
+            if(fileUploadResponse && fileUploadResponse.length > 0){
+              let image = fileUploadResponse.find((item) => item.fieldName == 'image');
+              if(image) data = {...data,image:image.response};
+            }
+        }
+
+        updateProfile({user:req.user,profile:data}).then((response)=>{
             return res.status(response.status).json(response);
         })
         .catch((error)=>{

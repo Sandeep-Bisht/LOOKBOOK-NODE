@@ -3,7 +3,7 @@ const moongoose = require('mongoose');
 const Schema = moongoose.Schema;
 
 const ProductsSchema = new Schema({   
-    name : {
+    title : {
         type : String,
         required : true,
         unique:true, 
