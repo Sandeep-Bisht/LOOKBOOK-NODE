@@ -3,7 +3,7 @@ const moongoose = require('mongoose');
 const Schema = moongoose.Schema;
 
 const ServicesSchema = new Schema({   
-    service : {
+    title : {
         type : String,
         required : true,
         unique:true, 

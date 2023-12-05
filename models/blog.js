@@ -12,17 +12,17 @@ const BlogSchema = new Schema({
         unique : true
     },
     description: {
-        required : true,
         type: String
     },
     featuredImage: {
-        type:Array
+        required : true,
+        type:String
     },
     content: {
         required: true,
         type : String
     }
-})
+},{ timestamps : true})
 
 const model = mongoose.model("blogs", BlogSchema)
 module.exports = model;

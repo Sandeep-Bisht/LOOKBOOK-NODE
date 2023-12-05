@@ -2,7 +2,7 @@ const router = require("express").Router()
 const AuthRoutes = require('../controllers/Auth/routes')
 const UsersRoutes = require('../controllers/Users/routes');
 const ServicesRoutes = require('../controllers/Services/routes');
-const ProductsRoutes = require('../controllers/Products/routes')
+const ProductsRoutes = require('../controllers/products/routes')
 const BlogsRoutes = require('../controllers/Blog/routes')
 // console.log("inside the routes")
 
