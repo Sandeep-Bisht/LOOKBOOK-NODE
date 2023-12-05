@@ -19,7 +19,6 @@ exports.googleSignup = async (req, res) => {
             
             if(tokens.id_token){
                 const userData = jwt.decode(tokens.id_token);
-                console.log('google user data',userData)
                 users.findOne({email: userData.email })
                   .then((result)=>{
                     if(result){
@@ -35,7 +34,7 @@ exports.googleSignup = async (req, res) => {
                         let newUserData = {
                           user:{usertype:'google',email: userData.email},
                           role:'user',
-                          profile:{fullName:userData.name,email: userData.email}
+                          profile:{fullName:userData.name,email: userData.email,usertype:'google'}
                         }
 
                         createNewUser(newUserData).then((response)=>{

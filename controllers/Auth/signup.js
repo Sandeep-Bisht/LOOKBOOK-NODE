@@ -38,13 +38,13 @@ exports.signup = async (req, res) => {
                     service: "gmail",
                     port: 587,
                     auth: {
-                      user: "negidpk866@gmail.com",
-                      pass: "wxeuyhcuovmrkluz",
+                      user: "nick976055@gmail.com",
+                      pass: "Giks@123",
                     },
                   });
         
                   const mailOptions = {
-                    from: "negidpk866@gmail.com",
+                    from: "nick976055@gmail.com",
                     to: username,
                     subject: "OTP for Login",
                     html: `<p>Your OTP is ${otp}. It is valid for 5 minutes.</p>`,
@@ -53,6 +53,7 @@ exports.signup = async (req, res) => {
                    transporter.sendMail(mailOptions,(err,info)=>{
                     if (err) {
                         return res.status(500).json({
+                            err,
                             error:true,
                             message: "Error sending mail.",
                           });
@@ -137,12 +138,14 @@ exports.signupVerify = async(req,res) => {
                     
                 }
                 else{
-                    let userData = {usertype:'local'};
+                    let userData = {};
 
                     if(emailRegex.test(username)){
+                        userData.usertype = 'email';
                         userData.email = username;
                     }
                     else{
+                        userData.usertype = 'mobile';
                         userData.mobile = username;
                     }
                     
