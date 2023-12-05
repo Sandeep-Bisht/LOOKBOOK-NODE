@@ -30,7 +30,7 @@ exports.facebookSignup = (req, res) => {
                         let newUserData = {
                           user:{usertype:'facebook',facebookID: userData.id},
                           role:'user',
-                          profile:{fullName:userData.name}
+                          profile:{fullName:userData.name,usertype:'facebook'}
                         }
 
                         createNewUser(newUserData).then((response)=>{
@@ -46,7 +46,6 @@ exports.facebookSignup = (req, res) => {
                     }
                   })
                   .catch((err)=>{
-                    console.log(err,'error is this')
                     res.status(400).json({
                         error:true,
                         message: "Error Finding user.",

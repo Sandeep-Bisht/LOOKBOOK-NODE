@@ -19,6 +19,13 @@ const ProfileSchema = new Schema({
         type : String,
         sparse: true
     },
+    image:{
+        type : String,
+    },
+    usertype:{
+        type : String,
+        required:true,
+    },
     defaultAddress : {
         type: Schema.Types.ObjectId, 
         ref : "address",

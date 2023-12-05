@@ -30,8 +30,6 @@ const createNewUser = async (data) => {
 
     const roleID = await Role.findOne({role});
 
-    console.log('roleid' + roleID._id)
-
     if(!roleID){
       return {
         error: true,
