@@ -1,8 +1,5 @@
 const mongoose = require('mongoose')
 
-mongoose.connect("mongodb+srv://negidpk866:k1BurHhZc3Oeeq5V@lookbookcluster.eixiriw.mongodb.net/?retryWrites=true&w=majority")
-    .then((e)=> console.log("Connected to mongoDB"))
+mongoose.connect("mongodb+srv://semwalshubham18:4VcVRdAzCOUWBdlj@lookbook.bylr1x3.mongodb.net/?retryWrites=true&w=majority")
+    .then((e)=> console.log(`Connected to mongoDB:${e.connection.host}`))
     .catch((e)=>console.log(e));
-
-
-    // mongoose.connect("mongodb+srv://negidpk866:k1BurHhZc3Oeeq5V@lookbookcluster.eixiriw.mongodb.net/?retryWrites=true&w=majority")
