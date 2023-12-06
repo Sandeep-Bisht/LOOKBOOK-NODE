@@ -20,7 +20,7 @@ const ProfileSchema = new Schema({
         sparse: true
     },
     image:{
-        type : String,
+        type : JSON,
     },
     usertype:{
         type : String,

@@ -14,7 +14,8 @@ exports.signup = async (req, res) => {
         if(username){
             if(/^[0-9]{10}$/.test(username) || emailRegex.test(username)){
                 
-            const otp = Math.floor(111111 + Math.random() * 999999); 
+            var otp = Math.floor(100000 + Math.random() * 900000);
+            otp = otp.toString();
             Cache.set(username, otp, 300);  //store otp for 300 seconds in catch
 
             if(await Cache.get(username)){
@@ -90,6 +91,7 @@ exports.signup = async (req, res) => {
     catch(err){
         res.status(500).json({
             error:true,
+            errorMessage:err.message,
             message:"Something went wrong please try again later."
         })
     }
