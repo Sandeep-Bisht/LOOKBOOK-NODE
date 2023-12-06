@@ -35,6 +35,7 @@ const updateProfile = async (data) => {
   } catch (error) {
     return {
       error: true,
+      errorMessage:error.message,
       status: 500,
       message: 'Error updating profile.',
     };

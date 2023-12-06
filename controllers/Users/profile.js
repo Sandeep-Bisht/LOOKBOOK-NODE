@@ -21,6 +21,7 @@ exports.setProfile = async (req, res) => {
         .catch((error)=>{
           res.status(400).json({
             error:true,
+            errorMessage:error.message,
             message: "Error updating profile.",
           });
         });
