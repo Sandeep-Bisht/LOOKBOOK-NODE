@@ -9,10 +9,8 @@ module.exports = {
             if (req.files) {
               let fileUploadResponse = await uploadFilesToImagekit(req);
               if(fileUploadResponse && fileUploadResponse.length > 0){
-                let icon = fileUploadResponse.find((item) => item.fieldName == "icon")
-                if(icon) data = {...data,icon:icon.response};
-                let image = fileUploadResponse.find((item) => item.fieldName == 'image');
-                if(image) data = {...data,image:image.response};
+                let featuredImage = fileUploadResponse.find((item) => item.fieldName == 'featuredImage');
+                if(featuredImage) data = {...data,featuredImage:featuredImage.response};
               }
             }
             Blog.create(data).then((result) => {
