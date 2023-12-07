@@ -9,10 +9,8 @@ const ArtistSchema = new Schema({
         ref : "users"       
     },
     Address : {
-        type: Schema.Types.ObjectId, 
-        ref : "address",
-        unique : true,
-        sparse: true
+        type: String,
+        required:true
     },
     coords:{
         type:JSON,
