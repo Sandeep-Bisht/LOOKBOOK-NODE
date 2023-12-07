@@ -26,12 +26,12 @@ const ProfileSchema = new Schema({
         type : String,
         required:true,
     },
-    defaultAddress : {
-        type: Schema.Types.ObjectId, 
-        ref : "address",
-        unique : true,
-        sparse: true
-    }
+    address : [{ type : JSON }],
+    status:{
+        type : String,
+        required : true,
+        default:'Active',
+    },
 
 }, { timestamps : true})
 

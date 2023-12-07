@@ -21,7 +21,12 @@ const BlogSchema = new Schema({
     content: {
         required: true,
         type : String
-    }
+    },
+    status:{
+        type : String,
+        required : true,
+        default:'Published',
+    },
 },{ timestamps : true})
 
 const model = mongoose.model("blogs", BlogSchema)

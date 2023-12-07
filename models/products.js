@@ -11,6 +11,11 @@ const ProductsSchema = new Schema({
     },
     icon: JSON,
     image: JSON,
+    status:{
+        type : String,
+        required : true,
+        default:'Active',
+    },
     createdBy: {
         required : true,
         type: Schema.Types.ObjectId, 
