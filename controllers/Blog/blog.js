@@ -47,7 +47,7 @@ module.exports = {
     },
     get_all_blog : async(req,res) => {
         try {
-            Blog.find_all().then((result)=> {
+            Blog.find().then((result)=> {
                 if(result){
                     res.status(200).json({
                         error : false,
