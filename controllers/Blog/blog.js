@@ -72,5 +72,5 @@ module.exports = {
                 message : "Please provide correct information"
             })
         }
-    }
+    },
 }
