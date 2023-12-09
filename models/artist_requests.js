@@ -5,19 +5,16 @@ const ArtistRequestSchema = new Schema({
     user_id: {
         required : true,
         type : Schema.Types.ObjectId,
-        unique : true,
         ref : "users"       
     },
     services:[
         {
-            required : true,
             type : Schema.Types.ObjectId,
             ref : "services" 
         }
     ],
     products:[
         {
-            required : true,
             type : Schema.Types.ObjectId,
             ref : "products" 
         }
@@ -31,7 +28,10 @@ const ArtistRequestSchema = new Schema({
     gallery:[{type:JSON}],
     description:String,
     pricing:[{type:JSON}],
-    status:String
+    status:{
+        type:String,
+        default: "progress"
+    }
 
 }, { timestamps : true})
 
