@@ -16,7 +16,7 @@ const updateProfile = async (data) => {
       };
     }
 
-    const profileResult = await Profile.findOneAndUpdate({_id:existingProfile._id},{$set:profile});
+    const profileResult = await Profile.findOneAndUpdate({_id:existingProfile._id},{$set:profile}, { new: true });
 
     if (!profileResult) {
       return {
