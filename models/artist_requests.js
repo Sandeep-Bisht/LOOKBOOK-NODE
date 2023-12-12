@@ -25,6 +25,10 @@ const ArtistRequestSchema = new Schema({
     experience:String,
     education:String,
     languages:JSON,
+    currentStep:{
+        type: Number,
+        default: 1
+    },
     gallery:[{type:JSON}],
     description:String,
     pricing:[{type:JSON}],
