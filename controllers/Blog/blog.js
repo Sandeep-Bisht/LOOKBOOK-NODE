@@ -73,4 +73,73 @@ module.exports = {
             })
         }
     },
+    get_blog_by_id : async(req,res) => {
+        const {_id} = req.body;
+        try{
+           await Blog.findById({_id}).then((result)=>{
+              if(result!==null)
+              {
+                res.status(200).json({
+                    error:false,
+                    message:"Data Found"
+                })
+              }else{
+                res.status(400).json({
+                    error:true,
+                    message:"Data not found"
+                })
+              }
+           })
+        }catch(error){
+            res.status(500).json({
+                error:true,
+                message:"Something went wrong, please try again later."
+            })
+        }
+    },
+    update_blog : async(req,res)=>{
+    let data = {};
+      const {_id,title,slug,description,content} = req.body;
+      data={
+        _id:_id,
+        title:title,
+        slug:slug,
+        description:description,
+        content:content,
+      }
+      if (req.files) {
+        try {
+          let fileUploadResponse = await uploadFilesToImagekit(req);
+          if (fileUploadResponse && fileUploadResponse.length > 0) {
+            let featuredImage = fileUploadResponse.find((item) => item.fieldName == 'updatedFeaturedImage');
+            if (featuredImage) data = { ...data, featuredImage: featuredImage.response };
+          }
+        } catch (uploadError) {
+          return res.status(500).json({
+            error: true,
+            message: "Error uploading files.",
+          });
+        }
+      }
+      try{
+        await Blog.findByIdAndUpdate(_id,data).then((result)=>{
+            if(result){
+                res.status(200).json({
+                    error:false,
+                    message:"Blog updated Successfully"
+                })
+            }else{
+                res.status(400).json({
+                    error:true,
+                    message:"Error updating Blog"
+                })
+            }
+          })
+      }catch(error){
+         res.status(500).json({
+            error:true,
+            message:"Something went wrong, please try again later."
+         })
+      }
+    }
 }
