@@ -76,12 +76,13 @@ module.exports = {
     get_blog_by_id : async(req,res) => {
         const {_id} = req.body;
         try{
-           await Blog.findById({_id}).then((result)=>{
+           await Blog.findById(_id).then((result)=>{
               if(result!==null)
               {
                 res.status(200).json({
                     error:false,
-                    message:"Data Found"
+                    message:"Data Found",
+                    data:result
                 })
               }else{
                 res.status(400).json({
