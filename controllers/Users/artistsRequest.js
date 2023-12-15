@@ -105,3 +105,29 @@ exports.updateArtistRequestStatus = async (req, res) => {
       });
     }
 };
+
+exports.getAllArtistRequest = async (req,res) =>{
+  try{
+    ArtistRequest.find().then((result)=>{
+      if(result!=null)
+      {
+        res.status(200).json({
+          error:false,
+          message:"Get All Artist",
+          data:result,
+        })
+      }
+      else{
+        res.status(400).json({
+          error:true,
+          message:"Data not found",
+        })
+      }
+    })
+  }catch(error){
+      res.status(500).json({
+      error: true,
+      message: "Something went wrong. Please try again later."
+    });
+  }
+}
