@@ -18,7 +18,35 @@ exports.getArtistRequests = async (req, res) => {
 
 exports.updateArtistRequest = async (req, res) => {
     try {
-      const updateFields = req.body;
+      var updateFields = {...req.body};
+
+      if (req.files) {
+        let fileUploadResponse = await uploadFilesToImagekit(req);
+        if(fileUploadResponse && fileUploadResponse.length > 0){
+
+          let adharFront = fileUploadResponse.find((item) => item.fieldName == 'adharFront');
+          if(adharFront) updateFields = {...updateFields,adharFront:adharFront.response};
+
+          let adharBack = fileUploadResponse.find((item) => item.fieldName == 'adharBack');
+          if(adharBack) updateFields = {...updateFields,adharBack:adharBack.response};
+
+          let panCard = fileUploadResponse.find((item) => item.fieldName == 'panCard');
+          if(panCard) updateFields = {...updateFields,panCard:panCard.response};
+
+          // let galleryImages = fileUploadResponse.filter((item) => item.fieldName == 'gallery');
+
+          // if(galleryImages.length > 0){
+          //   let galleryImagesResponse = [];
+          //   galleryImages.map((item) => galleryImagesResponse.push(item.response));
+          //   updateFields = {...updateFields,gallery:galleryImagesResponse};
+          // }
+
+          // let image = fileUploadResponse.find((item) => item.fieldName == 'image');
+          // if(image) data = {...data,image:image.response};
+        }
+    }
+
+      
   
       // Find the document by user_id and status
       let existingRequest = await ArtistRequest.findOne({ 'user_id': req.user._id, 'status': 'progress' });
