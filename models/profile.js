@@ -19,6 +19,12 @@ const ProfileSchema = new Schema({
         type : String,
         sparse: true
     },
+    gender: {
+        type: String,
+    },
+    dob: {
+        type: String,
+    },
     image:{
         type : JSON,
     },
