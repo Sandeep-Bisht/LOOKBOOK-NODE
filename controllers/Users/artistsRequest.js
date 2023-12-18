@@ -19,6 +19,8 @@ exports.getArtistRequests = async (req, res) => {
 exports.updateArtistRequest = async (req, res) => {
     try {
       var updateFields = {...req.body};
+      // Find the document by user_id and status
+      let existingRequest = await ArtistRequest.findOne({ 'user_id': req.user._id, 'status': 'progress' });
 
       if (req.files) {
         let fileUploadResponse = await uploadFilesToImagekit(req);
@@ -33,23 +35,22 @@ exports.updateArtistRequest = async (req, res) => {
           let panCard = fileUploadResponse.find((item) => item.fieldName == 'panCard');
           if(panCard) updateFields = {...updateFields,panCard:panCard.response};
 
-          // let galleryImages = fileUploadResponse.filter((item) => item.fieldName == 'gallery');
+          let galleryImages = fileUploadResponse.filter((item) => item.fieldName == 'gallery');
 
-          // if(galleryImages.length > 0){
-          //   let galleryImagesResponse = [];
-          //   galleryImages.map((item) => galleryImagesResponse.push(item.response));
-          //   updateFields = {...updateFields,gallery:galleryImagesResponse};
-          // }
-
-          // let image = fileUploadResponse.find((item) => item.fieldName == 'image');
-          // if(image) data = {...data,image:image.response};
+          if(galleryImages.length > 0){
+            let galleryImagesResponse = [];
+            if(!existingRequest){
+              galleryImages.map((item) => galleryImagesResponse.push(item.response));
+              updateFields = {...updateFields,gallery:galleryImagesResponse};
+            }
+            else{
+              galleryImagesResponse = [...existingRequest.gallery]
+              galleryImages.map((item) => galleryImagesResponse.push(item.response));
+              updateFields = {...updateFields,gallery:galleryImagesResponse};
+            }
+          }
         }
     }
-
-      
-  
-      // Find the document by user_id and status
-      let existingRequest = await ArtistRequest.findOne({ 'user_id': req.user._id, 'status': 'progress' });
   
       if (!existingRequest) {
         // If the document is not found, create a new one
