@@ -9,7 +9,7 @@ router.post('/setProfile',passport.authenticate('jwt',{session:false}),upload.an
 router.get('/getProfile',passport.authenticate('jwt',{session:false}),getProfile)
 
 router.get('/getArtistRequests',passport.authenticate('jwt',{session:false}),getArtistRequests)
-router.post('/updateArtistRequest',passport.authenticate('jwt',{session:false}),updateArtistRequest)
+router.post('/updateArtistRequest',passport.authenticate('jwt',{session:false}),upload.any('files'),updateArtistRequest)
 router.get('/updateArtistRequestStatus/:status',passport.authenticate('jwt',{session:false}),updateArtistRequestStatus)
 router.get('/getAllArtistRequest',passport.authenticate('jwt',{session:false}),getAllArtistRequest)
 

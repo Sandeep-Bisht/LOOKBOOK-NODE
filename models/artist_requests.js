@@ -31,7 +31,11 @@ const ArtistRequestSchema = new Schema({
     },
     gallery:[{type:JSON}],
     description:String,
-    pricing:[{type:JSON}],
+    pricing:JSON,
+    adharFront:JSON,
+    adharBack:JSON,
+    panCard:JSON,
+    certificates:[{type:JSON}],
     status:{
         type:String,
         default: "progress"
