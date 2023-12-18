@@ -29,7 +29,7 @@ exports.uploadFileToImagekit = async (req) =>{
             const fileExtension = path.extname(originalFileName).toLowerCase();
 
             // List of allowed image and video file extensions
-            const allowedExtensions = ['.jpg', '.jpeg', '.png','.svg', '.gif', '.webp', '.mp4', '.avi', '.mov'];
+            const allowedExtensions = ['.jpg', '.jpeg', '.png','.svg', '.gif', '.webp', '.mp4', '.avi', '.mov','.pdf'];
 
             if (allowedExtensions.includes(fileExtension)) {
                 // It's an image or video; you can proceed to upload to ImageKit.io
@@ -69,7 +69,7 @@ exports.uploadFilesToImagekit = async (req) => {
                     const fileBuffer = file.buffer;
                     const originalFileName = file.originalname;
                     const fileExtension = path.extname(originalFileName).toLowerCase();
-                    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.svg', '.gif', '.webp', '.mp4', '.avi', '.mov'];
+                    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.svg', '.gif', '.webp', '.mp4', '.avi', '.mov','.pdf'];
 
                     if (allowedExtensions.includes(fileExtension)) {
                         try {
