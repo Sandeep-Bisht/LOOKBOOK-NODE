@@ -52,6 +52,8 @@ exports.updateArtistRequest = async (req, res) => {
 
           let certificateImages = fileUploadResponse.filter((item) => item.fieldName == 'certificates');
 
+          // He can upload pdf also
+          
           if(certificateImages.length > 0){
             let certificateImagesResponse = [];
             if(!existingRequest){
