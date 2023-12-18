@@ -49,6 +49,21 @@ exports.updateArtistRequest = async (req, res) => {
               updateFields = {...updateFields,gallery:galleryImagesResponse};
             }
           }
+
+          let certificateImages = fileUploadResponse.filter((item) => item.fieldName == 'certificates');
+
+          if(certificateImages.length > 0){
+            let certificateImagesResponse = [];
+            if(!existingRequest){
+              certificateImages.map((item) => certificateImagesResponse.push(item.response));
+              updateFields = {...updateFields,certificates:certificateImagesResponse};
+            }
+            else{
+              certificateImagesResponse = [...existingRequest.certificates]
+              certificateImages.map((item) => certificateImagesResponse.push(item.response));
+              updateFields = {...updateFields,certificates:certificateImagesResponse};
+            }
+          }
         }
     }
   
