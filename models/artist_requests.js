@@ -19,8 +19,13 @@ const ArtistRequestSchema = new Schema({
             ref : "products" 
         }
     ],
+    fullname:String,
+    email:String,
+    mobile:String,
+    instaId:String,
+    dob:String,
+    gender:String,
     coords:JSON,
-    address:JSON,
     travel:Boolean,
     experience:String,
     education:String,
@@ -31,6 +36,7 @@ const ArtistRequestSchema = new Schema({
     },
     gallery:[{type:JSON}],
     description:String,
+    alias:String,
     pricing:JSON,
     adharFront:JSON,
     adharBack:JSON,
