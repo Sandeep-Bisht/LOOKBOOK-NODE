@@ -3,27 +3,37 @@ var jwt = require('jsonwebtoken');
 let users = require('../../models/Users');
 const axios = require('axios');
 const createNewUser = require('../../services/createNewUser')
+const UserRoles = require('../../models/user_roles')
 
 exports.facebookSignup = (req, res) => {
     try{
         const { userID, accessToken } = req.body
 
         if(userID && accessToken){
-            // https://graph.facebook.com/me?access_token=${accessToken}
               axios.get(`https://graph.facebook.com/${userID}?fields=id,name,email,picture&access_token=${accessToken}`)
               .then((response) => {
                 if (response.status === 200) {
                   const userData = response.data;
                   users.findOne({facebookID: userData.id })
 
-                  .then((result)=>{
+                  .then(async(result)=>{
                     if(result){
-                        let token = jwt.sign({userID:result._id},process.env.JWT_KEY,{ expiresIn: "30d" })
+                      try{
+                        let roleId = await UserRoles.findOne({ user_id: result._id });
+                        let token = jwt.sign({userID:result._id,role:roleId.role_id},process.env.JWT_KEY,{ expiresIn: "30d" })
                         return res.status(200).json({
                                           error: false,
                                           token: token,
                                           message: "User logged in successfully!",
                                         });
+                      }
+                      catch(error){
+                        res.status(400).json({
+                          error:true,
+                          message: "Error Creating user token.",
+                        });
+                      }
+                        
                     }
                     else{
     
