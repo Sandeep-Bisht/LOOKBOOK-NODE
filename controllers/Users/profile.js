@@ -2,6 +2,7 @@ require('dotenv').config();
 const { uploadFilesToImagekit } = require('../../config/upload');
 const Profile = require('../../models/profile');
 const updateProfile = require('../../services/updateProfile');
+const UserRoles = require('../../models/user_roles')
 
 exports.setProfile = async (req, res) => {
     try{
@@ -39,8 +40,8 @@ exports.setProfile = async (req, res) => {
 exports.getProfile = async (req, res) => {
     try{
         const existingProfile = await Profile.findOne({'user_id':req.user._id});
-        return res.send(existingProfile);
-        
+        const role = await UserRoles.findOne({'user_id':req.user._id});
+        return res.send({...existingProfile,role:role.role_id});
     }
     catch(err){
         res.status(500).json({

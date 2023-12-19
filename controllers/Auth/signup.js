@@ -6,6 +6,7 @@ const NodeCache = require('node-cache');
 const Cache = new NodeCache();
 const sendOTP = require('../../config/sendOTP');
 const createNewUser = require('../../services/createNewUser')
+const UserRoles = require('../../models/user_roles')
 
 exports.signup = async (req, res) => {
     try{
@@ -127,16 +128,25 @@ exports.signupVerify = async(req,res) => {
                   { mobile: username }  // Check for duplicate mobile
                 ]
               })
-              .then((result)=>{
+              .then(async(result)=>{
 
                 if(result){
 
-                    let token = jwt.sign({userID:result._id},process.env.JWT_KEY,{ expiresIn: "30d" })
-                    return res.status(200).json({
-                                      error: false,
-                                      token: token,
-                                      message: "User logged in successfully!",
-                                    });
+                    try{
+                        let roleId = await UserRoles.findOne({ user_id: result._id });
+                        let token = jwt.sign({userID:result._id,role:roleId.role_id},process.env.JWT_KEY,{ expiresIn: "30d" })
+                        return res.status(200).json({
+                                          error: false,
+                                          token: token,
+                                          message: "User logged in successfully!",
+                                        });
+                      }
+                      catch(error){
+                        res.status(400).json({
+                          error:true,
+                          message: "Error Creating user token.",
+                        });
+                      }
                     
                 }
                 else{

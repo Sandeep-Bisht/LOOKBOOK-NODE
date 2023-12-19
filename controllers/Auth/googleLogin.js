@@ -3,6 +3,7 @@ var jwt = require('jsonwebtoken');
 let users = require('../../models/Users');
 const { OAuth2Client } = require('google-auth-library');
 const createNewUser = require('../../services/createNewUser')
+const UserRoles = require('../../models/user_roles')
 
 // initialize oathclient
 const oAuth2Client = new OAuth2Client(
@@ -20,14 +21,23 @@ exports.googleSignup = async (req, res) => {
             if(tokens.id_token){
                 const userData = jwt.decode(tokens.id_token);
                 users.findOne({email: userData.email })
-                  .then((result)=>{
+                  .then(async(result)=>{
                     if(result){
-                        let token = jwt.sign({userID:result._id},process.env.JWT_KEY,{ expiresIn: "30d" })
-                        return res.status(200).json({
-                                          error: false,
-                                          token: token,
-                                          message: "User logged in successfully!",
-                                        });
+                        try{
+                            let roleId = await UserRoles.findOne({ user_id: result._id });
+                            let token = jwt.sign({userID:result._id,role:roleId.role_id},process.env.JWT_KEY,{ expiresIn: "30d" })
+                            return res.status(200).json({
+                                              error: false,
+                                              token: token,
+                                              message: "User logged in successfully!",
+                                            });
+                          }
+                          catch(error){
+                            res.status(400).json({
+                              error:true,
+                              message: "Error Creating user token.",
+                            });
+                          }
                     }
                     else{
 

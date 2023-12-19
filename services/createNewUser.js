@@ -60,7 +60,7 @@ const createNewUser = async (data) => {
       };
     }
 
-    const token = jwt.sign({ userID: userResult._id }, process.env.JWT_KEY, { expiresIn: '30d' });
+    const token = jwt.sign({ userID: userResult._id,role:roleID._id }, process.env.JWT_KEY, { expiresIn: '30d' });
 
     return {
       error: false,
