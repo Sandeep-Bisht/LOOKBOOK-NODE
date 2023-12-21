@@ -154,7 +154,7 @@ exports.updateArtistRequestStatus = async (req, res) => {
 
 exports.getAllArtistRequest = async (req,res) =>{
   try{
-    ArtistRequest.find().then((result)=>{
+    ArtistRequest.find().populate('services').populate('products').then((result)=>{
       if(result!=null)
       {
         res.status(200).json({
