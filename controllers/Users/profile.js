@@ -41,7 +41,7 @@ exports.getProfile = async (req, res) => {
     try{
         const existingProfile = await Profile.findOne({'user_id':req.user._id});
         const role = await UserRoles.findOne({'user_id':req.user._id});
-        return res.send({...existingProfile,role:role.role_id});
+        return res.send({...existingProfile._doc,role:role.role_id});
     }
     catch(err){
         res.status(500).json({

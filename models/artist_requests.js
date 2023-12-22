@@ -25,6 +25,8 @@ const ArtistRequestSchema = new Schema({
     instaId:String,
     dob:String,
     gender:String,
+    mobileVerified:{type:Boolean,default:false},
+    emailVerified:{type:Boolean,default:false},
     coords:JSON,
     travel:Boolean,
     experience:String,
