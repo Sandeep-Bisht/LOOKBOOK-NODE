@@ -42,6 +42,7 @@ const ArtistRequestSchema = new Schema({
     adharBack:JSON,
     panCard:JSON,
     certificates:[{type:JSON}],
+    remark:{type:String},
     status:{
         type:String,
         default: "progress"

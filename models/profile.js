@@ -33,6 +33,8 @@ const ProfileSchema = new Schema({
         required:true,
     },
     address : [{ type : JSON }],
+    mobileVerified:{type:Boolean,default:false},
+    emailVerified:{type:Boolean,default:false},
     status:{
         type : String,
         required : true,
