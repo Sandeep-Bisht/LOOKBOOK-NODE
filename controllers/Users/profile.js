@@ -1,4 +1,3 @@
-require('dotenv').config();
 const { uploadFilesToImagekit } = require('../../config/upload');
 const Profile = require('../../models/profile');
 const updateProfile = require('../../services/updateProfile');

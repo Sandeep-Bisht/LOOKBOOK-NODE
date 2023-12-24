@@ -1,5 +1,4 @@
 const Blog = require('../../models/blog')
-require('dotenv').config();
 const {uploadFilesToImagekit} = require('../../config/upload')
 
 module.exports = {

@@ -3,7 +3,6 @@
 // role filed contained role name of user if null or undefine then role will be ser user default.
 // profile contained profie table data like name email phone and other fields.
 
-require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const User = require('../models/Users'); // Import your User model
 const Profile = require('../models/profile'); // Import your Profile model

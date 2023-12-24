@@ -1,4 +1,3 @@
-require('dotenv').config();
 const { uploadFilesToImagekit } = require('../../config/upload');
 const ArtistRequest = require('../../models/artist_requests');
 

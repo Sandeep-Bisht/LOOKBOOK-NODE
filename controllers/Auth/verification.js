@@ -1,4 +1,3 @@
-require('dotenv').config();
 const sendOTP = require('../../config/sendOTP');
 const nodemailer = require("nodemailer");
 const NodeCache = require('node-cache');

@@ -1,4 +1,3 @@
-require('dotenv').config();
 const Profile = require('../models/profile'); // Import your Profile model
 
 const updateProfile = async (data) => {

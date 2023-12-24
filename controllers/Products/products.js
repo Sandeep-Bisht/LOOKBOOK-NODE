@@ -1,4 +1,3 @@
-require('dotenv').config();
 const Products = require("../../models/products");
 const {uploadFilesToImagekit} = require('../../config/upload');
 
