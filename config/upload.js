@@ -1,6 +1,5 @@
 const imagekit = require('imagekit');
 const path = require('path');
-require('dotenv').config();
 
 const multer = require('multer');
 

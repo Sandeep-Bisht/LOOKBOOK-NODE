@@ -1,4 +1,3 @@
-require('dotenv').config();
 const Services = require("../../models/services");
 const {uploadFilesToImagekit} = require('../../config/upload');
 const { captureRejectionSymbol } = require('node-cache');
