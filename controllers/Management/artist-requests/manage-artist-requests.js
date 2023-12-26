@@ -66,11 +66,7 @@ exports.verifyRequest = async (req, res) => {
                             { new: true }
                           );
 
-                        await ArtistRequest.findOneAndUpdate(
-                            {'user_id': result.user_id},
-                            { $set: payload },
-                            { new: true }
-                          );
+                        await ArtistRequest.deleteMany({'user_id': result.user_id});
 
                         return res.status(200).json({
                             status: 200,
