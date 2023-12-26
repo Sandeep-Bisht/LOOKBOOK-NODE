@@ -14,6 +14,7 @@ const ProfileSchema = new Schema({
         unique : true,
         sparse: true
     },
+    instaId:String,
     mobile: {
         unique : true,
         type : String,
@@ -25,6 +26,7 @@ const ProfileSchema = new Schema({
     dob: {
         type: String,
     },
+    alias: String,
     image:{
         type : JSON,
     },
@@ -33,8 +35,6 @@ const ProfileSchema = new Schema({
         required:true,
     },
     address : [{ type : JSON }],
-    mobileVerified:{type:Boolean,default:false},
-    emailVerified:{type:Boolean,default:false},
     status:{
         type : String,
         required : true,

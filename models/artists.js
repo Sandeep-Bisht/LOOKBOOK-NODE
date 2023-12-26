@@ -8,17 +8,61 @@ const ArtistSchema = new Schema({
         unique : true,
         ref : "users"       
     },
-    Address : {
-        type: String,
-        required:true
+    profile_id: {
+        required : true,
+        type : Schema.Types.ObjectId,
+        ref : "profile"       
     },
+    services:[
+        {   
+            required:true,
+            type : Schema.Types.ObjectId,
+            ref : "services" 
+        }
+    ],
+    products:[
+        {
+            required:true,
+            type : Schema.Types.ObjectId,
+            ref : "products" 
+        }
+    ],
     coords:{
         type:JSON,
         required:true
     },
+    travel:Boolean,
+    experience:String,
+    education:String,
+    languages:JSON,
+    gallery:[{
+        type:JSON,
+        required:true
+    }],
+    description:String,
+    pricing:{
+        type:JSON,
+        required:true
+    },
+    adharFront:{
+        type:JSON,
+        required:true
+    },
+    adharBack:{
+        type:JSON,
+        required:true
+    },
+    panCard:{
+        type:JSON,
+        required:true
+    },
+    certificates:[{type:JSON}],
+    Address : {
+        type: String,
+    },
     status: {
         type: String,
-        default: "pending" // Set the default value to "pending"
+        default: "active" // Set the default value to "active"
     },
 
 }, { timestamps : true})
