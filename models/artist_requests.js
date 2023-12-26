@@ -7,6 +7,11 @@ const ArtistRequestSchema = new Schema({
         type : Schema.Types.ObjectId,
         ref : "users"       
     },
+    profile_id: {
+        required : true,
+        type : Schema.Types.ObjectId,
+        ref : "profile"       
+    },
     services:[
         {
             type : Schema.Types.ObjectId,
@@ -19,14 +24,6 @@ const ArtistRequestSchema = new Schema({
             ref : "products" 
         }
     ],
-    fullname:String,
-    email:String,
-    mobile:String,
-    instaId:String,
-    dob:String,
-    gender:String,
-    mobileVerified:{type:Boolean,default:false},
-    emailVerified:{type:Boolean,default:false},
     coords:JSON,
     travel:Boolean,
     experience:String,
@@ -38,7 +35,6 @@ const ArtistRequestSchema = new Schema({
     },
     gallery:[{type:JSON}],
     description:String,
-    alias:String,
     pricing:JSON,
     adharFront:JSON,
     adharBack:JSON,

@@ -1,5 +1,7 @@
 const { uploadFilesToImagekit } = require('../../config/upload');
 const ArtistRequest = require('../../models/artist_requests');
+const userRoles = require('../../models/user_roles')
+const profiles = require('../../models/profile')
 
 exports.getArtistRequests = async (req, res) => {
     try{
@@ -18,8 +20,55 @@ exports.getArtistRequests = async (req, res) => {
 exports.updateArtistRequest = async (req, res) => {
     try {
       var updateFields = {...req.body};
+      var requestStatus = req.body?.status;
+      delete updateFields.status;
+
       // Find the document by user_id and status
       let existingRequest = await ArtistRequest.findOne({ 'user_id': req.user._id, 'status': 'progress' });
+
+
+      // updating request status for verification
+
+      if(requestStatus && (requestStatus == 'pending' || requestStatus == 'progress')){
+        if(requestStatus == 'progress'){
+          updateFields['status'] = 'progress';
+        }
+        if(requestStatus == 'pending'){
+          if(existingRequest){
+            let existingRequestData = {...existingRequest._doc};
+            
+            if(existingRequestData.user_id.equals(req.user._id) && existingRequestData.profile_id && existingRequestData.services.length > 0 && existingRequestData.products.length > 0 && existingRequestData.coords?.lat && existingRequestData.coords?.lng && existingRequestData.gallery.length > 2 && existingRequestData.description && existingRequestData.pricing && existingRequestData.adharFront && existingRequestData.adharBack && existingRequestData.panCard){
+              let profile = await profiles.findOne({'user_id': req.user._id});
+              let profileData = {...profile._doc}
+
+              if(profileData.fullName && profileData.email && profileData.instaId && profileData.mobile && profileData.gender && profileData.dob && profileData.status == 'Active'){
+                updateFields['status'] = 'pending';
+              }
+              else{
+                return res.status(400).json({
+                  status: 400,
+                  message: "Please provide correct information."
+                });
+              }
+            }
+            else{
+              return res.status(400).json({
+                status: 400,
+                message: "Please provide correct information."
+              });
+            }
+
+          }
+          else{
+            return res.status(400).json({
+              status: 400,
+              message: "Please provide correct information."
+            });
+          }
+        }
+      }
+
+      // end updating request status for verification
 
       if (req.files) {
         let fileUploadResponse = await uploadFilesToImagekit(req);
@@ -69,8 +118,10 @@ exports.updateArtistRequest = async (req, res) => {
     }
   
       if (!existingRequest) {
-        // If the document is not found, create a new one
+      
+        let profile = await profiles.findOne({'user_id': req.user._id});
         updateFields['user_id'] = req.user._id;
+        updateFields['profile_id'] = profile._id;
   
         ArtistRequest.create(updateFields)
           .then((result) => {
@@ -153,7 +204,7 @@ exports.updateArtistRequestStatus = async (req, res) => {
 
 exports.getAllArtistRequest = async (req,res) =>{
   try{
-    ArtistRequest.find().populate('services').populate('products').then((result)=>{
+    ArtistRequest.find().populate('services').populate('products').populate('profile_id').then((result)=>{
       if(result!=null)
       {
         res.status(200).json({
