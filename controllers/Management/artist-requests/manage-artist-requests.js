@@ -104,3 +104,31 @@ exports.verifyRequest = async (req, res) => {
     }
 }
 
+exports.artistRequestById = async (req,res) =>{
+
+    try{
+        let userRole = await userRoles.findOne({'user_id':req.user._id});
+
+        if(userRole.role_id.equals(process.env.ROLE_ADMIN)){
+
+        const request_id = req.params.request_id;
+        const request = await ArtistRequest.findById(request_id).populate('services').populate('products').populate('profile_id');
+        return res.status(200).json(request);
+        }
+        else{
+            return res.status(401).json({
+                error:true,
+                message:"unauthorized role."
+            })
+        }
+    }
+    catch(err){
+        console.error(err);
+        return res.status(500).json({
+          error: true,
+          message: "Something went wrong. Please try again later."
+        });
+    }
+
+}
+
