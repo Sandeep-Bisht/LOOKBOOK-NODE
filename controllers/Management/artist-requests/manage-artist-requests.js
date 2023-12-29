@@ -2,6 +2,7 @@ const ArtistRequest = require('../../../models/artist_requests');
 const userRoles = require('../../../models/user_roles')
 const Artists = require('../../../models/artists')
 const Joi = require('joi');
+const { default: axios } = require('axios');
 
 const requiredSchema = Joi.object({
     status: Joi.string().valid('approved', 'rejected').required(),
@@ -57,6 +58,38 @@ exports.verifyRequest = async (req, res) => {
                             }
                         });
 
+                        const FindAddress = await axios.get( `https://maps.googleapis.com/maps/api/geocode/json?latlng=${existingRequest.coords.lat},${existingRequest.coords.lng}&key=${process.env.GOOGLE_MAP_API_KEY}`);
+
+                        if (FindAddress.data.status === 'OK') {
+                             const addressResult = FindAddress.data.results;
+                             if (addressResult.length > 0) {
+                                const addressComponents = addressResult[0].address_components;
+
+                                let city, state, country, postalCode ;
+
+                                for (const component of addressComponents) {
+                                    if (component.types.includes('locality')) {
+                                      city = component.long_name;
+                                    } else if (component.types.includes('administrative_area_level_1')) {
+                                      state = component.long_name;
+                                    } else if (component.types.includes('country')) {
+                                      country = component.long_name;
+                                    } else if (component.types.includes('postal_code')) {
+                                      postalCode = component.long_name;
+                                    }
+                                }
+
+                                newObject['address'] = {city, state, country, postalCode};
+
+                            }
+                            else{
+                                newObject['address'] = {city:null, state:null, country:null, postalCode:null};
+                            }
+                        }
+                        else{
+                            newObject['address'] = {city:null, state:null, country:null, postalCode:null};
+                        }
+
                         const newArtist = new Artists(newObject);
                         const result = await newArtist.save();
 
@@ -91,9 +124,6 @@ exports.verifyRequest = async (req, res) => {
                 message:"unauthorized role."
             })
         }
-        // const existingRequest = await ArtistRequest.find({'user_id':req.user._id});
-        // return res.send(existingRequest);
-        
     }
     catch(err){
         res.status(500).json({

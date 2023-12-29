@@ -57,9 +57,7 @@ const ArtistSchema = new Schema({
         required:true
     },
     certificates:[{type:JSON}],
-    Address : {
-        type: String,
-    },
+    address : { type : JSON },
     status: {
         type: String,
         default: "active" // Set the default value to "active"

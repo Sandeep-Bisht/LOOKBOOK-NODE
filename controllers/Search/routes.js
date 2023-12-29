@@ -1,7 +1,8 @@
 const router = require("express").Router()
 
-const { getInitialData } = require('./index')
+const { getInitialData, findArtist } = require('./index')
 
 router.get('/getInitialData',getInitialData)
+router.get('/findArtist',findArtist)
 
 module.exports = router
