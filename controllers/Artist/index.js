@@ -12,3 +12,17 @@ exports.getAll = async (req, res) => {
         })
     }
 }
+
+exports.getByID = async (req, res) => {
+    try{
+        const {artist_id}  = {...req.params}
+        const artist = await Artists.findById(artist_id).populate('profile_id').populate('services').populate('products');
+        return res.status(200).json(artist);
+    }
+    catch(err){
+        res.status(404).json({
+            error:true,
+            message:"No Artist found with this ID."
+        })
+    }
+}

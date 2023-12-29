@@ -141,5 +141,26 @@ module.exports = {
             message:"Something went wrong, please try again later."
          })
       }
+    },
+    get_blog_by_slug: async(req,res)=>{
+        try{
+          const slug = req.params.slug;
+           await Blog.findOne({slug}).then((result)=>{
+              if(result!==null)
+              {
+                res.status(200).json(result)
+              }else{
+                res.status(400).json({
+                    error:true,
+                    message:"Data not found"
+                })
+              }
+           })
+        }catch(error){
+            res.status(500).json({
+                error:true,
+                message:"Something went wrong, please try again later."
+            })
+        }
     }
 }

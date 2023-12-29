@@ -8,5 +8,6 @@ router.post('/blog-create',passport.authenticate('jwt',{session:false}),upload.a
 router.get('/all_blogs',blogs.get_all_blog);
 router.post('/get_blog_by_id',passport.authenticate('jwt',{session:false}),blogs.get_blog_by_id)
 router.put('/blog_update',passport.authenticate('jwt',{session:false}),upload.any('files'),blogs.update_blog)
+router.get('/get_blog_by_slug/:slug',blogs.get_blog_by_slug)
 module.exports = router
  
