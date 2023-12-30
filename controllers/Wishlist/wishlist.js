@@ -25,11 +25,18 @@ module.exports={
                     });
                   });
                 } else {
-                  res.status(200).json({
-                    error: false,
-                    message: "Artist already wishlisted.",
-                    data: result
-                  });
+                    let updatedArtists = [...result.artist].filter( item => !item.equals(artist_id));
+                    await Wishlist.findOneAndUpdate(
+                      { 'user_id': req.user._id },
+                      { $set: { artist: updatedArtists } },
+                      { new: true }
+                    ).then((updatedResult) => {
+                      res.status(200).json({
+                        error: false,
+                        message: "Artist remved from wishlist successfully.",
+                        data: updatedResult // Use updatedResult instead of res
+                      });
+                    });
                 }
               } else {
                 Wishlist.create({ 'user_id': req.user._id, 'artist': [artist_id] }).then((newResult) => {
