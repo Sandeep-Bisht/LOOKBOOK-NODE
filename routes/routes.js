@@ -6,7 +6,8 @@ const ProductsRoutes = require('../controllers/Products/routes')
 const BlogsRoutes = require('../controllers/Blog/routes')
 const ManagementRoutes = require('../controllers/Management/routes')
 const ArtistRoutes = require('../controllers/Artist/routes')
-const SearchRoutes = require('../controllers/Search/routes')
+const SearchRoutes = require('../controllers/Search/routes');
+const WishlistRoutes = require('../controllers/Wishlist/routes');
 
 router.use('/auth',AuthRoutes);
 router.use('/users',UsersRoutes);
@@ -15,6 +16,7 @@ router.use('/product',ProductsRoutes)
 router.use('/blog',BlogsRoutes);
 router.use('/artists',ArtistRoutes)
 router.use('/management',ManagementRoutes)
-router.use('/search',SearchRoutes)
+router.use('/search',SearchRoutes);
+router.use('/wishlist', WishlistRoutes);
 
 module.exports = router
