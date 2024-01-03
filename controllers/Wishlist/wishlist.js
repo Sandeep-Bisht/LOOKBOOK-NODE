@@ -1,4 +1,5 @@
 const Wishlist = require("../../models/wishlist");
+const Artist = require("../../models/artists")
 
 module.exports={
   
@@ -95,6 +96,41 @@ module.exports={
       });
     }
   },
+
+  get_user_wishlist: async (req, res) => {
+    try {
+      // Find the user's wishlist
+      const wishlist = await Wishlist.findOne({ 'user_id': req.user._id });
+  
+      if (wishlist !== null) {
+        // Extract artist IDs from the wishlist
+        const artistIds = wishlist.artist;
+  
+        // Fetch detailed artist data using the artist IDs
+        const artistData = await Artist.find({ '_id': { $in: artistIds } });
+  
+        res.status(200).json({
+          error: false,
+          message: "Data found",
+          data: {
+            artists: artistData,
+          },
+        });
+      } else {
+        res.status(404).json({
+          error: true,
+          message: "Data not found",
+        });
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({
+        error: true,
+        message: "Internal server error",
+      });
+    }
+  }
+  
 
 
 }
