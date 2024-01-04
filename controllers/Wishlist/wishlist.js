@@ -104,6 +104,7 @@ module.exports={
   
       if (wishlist !== null) {
         // Extract artist IDs from the wishlist
+        console.log("checking wishlist", wishlist)
         const artistIds = wishlist.artist;
   
         // Fetch detailed artist data using the artist IDs
@@ -113,7 +114,7 @@ module.exports={
           error: false,
           message: "Data found",
           data: {
-            artists: artistData,
+            artist: artistData,
           },
         });
       } else {
