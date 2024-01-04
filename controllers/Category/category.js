@@ -61,7 +61,7 @@ module.exports = {
         data={
             _id:_id,
             title:title,
-            slug,slug,
+            slug:slug,
             description:description
         }
         try{
