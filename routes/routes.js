@@ -8,6 +8,7 @@ const ManagementRoutes = require('../controllers/Management/routes')
 const ArtistRoutes = require('../controllers/Artist/routes')
 const SearchRoutes = require('../controllers/Search/routes');
 const WishlistRoutes = require('../controllers/Wishlist/routes');
+const Category = require('../controllers/Category/routes')
 
 router.use('/auth',AuthRoutes);
 router.use('/users',UsersRoutes);
@@ -18,5 +19,6 @@ router.use('/artists',ArtistRoutes)
 router.use('/management',ManagementRoutes)
 router.use('/search',SearchRoutes);
 router.use('/wishlist', WishlistRoutes);
+router.use('/category',Category);
 
 module.exports = router
