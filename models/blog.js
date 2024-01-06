@@ -14,6 +14,11 @@ const BlogSchema = new Schema({
     description: {
         type: String
     },
+    category: {
+        required : true,
+        type : Schema.Types.ObjectId,
+        ref:"categories"
+    },
     featuredImage: {
         required : true,
         type:JSON

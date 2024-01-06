@@ -46,7 +46,7 @@ module.exports = {
     },
     get_all_blog : async(req,res) => {
         try {
-            Blog.find().then((result)=> {
+            Blog.find().populate("category").then((result)=> {
                 if(result){
                     res.status(200).json({
                         error : false,
@@ -162,5 +162,25 @@ module.exports = {
                 message:"Something went wrong, please try again later."
             })
         }
+    },
+    
+    get_Blog_CategoryById: async (req, res) => {
+      const { category_id } = req.params;
+      try {
+        const blogs = await Blog.find({ category: category_id }).populate("category");
+        if (!blogs || blogs.length === 0) {
+          return res.status(404).json({
+            error: true,
+            message: "No Blogs found for this Category ID."
+          });
+        }
+        return res.status(200).json(blogs);
+      } catch (error) {
+        res.status(500).json({
+          error: true,
+          message: "Error finding Blogs for this Category ID."
+        });
+      }
     }
+    
 }
