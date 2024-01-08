@@ -162,3 +162,36 @@ exports.artistRequestById = async (req,res) =>{
 
 }
 
+exports.markFeaturedArtist = async (req, res) => {
+    try {
+      const payload = req.body;
+      let { request_id, featuredTag } = payload;  
+      // Use await here to wait for the result of the query
+      let updatedArtist = await Artists.findOneAndUpdate(
+        { _id: request_id }, // Assuming _id is of type ObjectId
+        { $set: { featuredTag: featuredTag } },
+        { new: true }
+      );
+  
+      // Check if the artist is found
+      if (updatedArtist) {
+        res.status(200).json({
+          error: false,
+          message: "Artist marked as featured successfully.",
+          data: updatedArtist,
+        });
+      } else {
+        res.status(404).json({
+          error: true,
+          message: "Artist not found with the specified ID.",
+        });
+      }
+    } catch (error) {
+      console.log("Error:", error);
+      res.status(500).json({
+        error: true,
+        message: "Internal server error",
+      });
+    }
+  };
+
