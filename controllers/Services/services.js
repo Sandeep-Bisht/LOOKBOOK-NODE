@@ -70,6 +70,7 @@ module.exports={
   },
 
   get_service_by_id: async (req, res) => {
+    console.log("inside get services by id")
     const { _id } = req.body;
     try {  
       await Services.findById(_id).then((result)=>

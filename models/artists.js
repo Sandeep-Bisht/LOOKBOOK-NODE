@@ -62,6 +62,10 @@ const ArtistSchema = new Schema({
         type: String,
         default: "active" // Set the default value to "active"
     },
+    featuredTag: {
+        type: Boolean,
+        default: false, // or true, depending on your default value
+      }
 
 }, { timestamps : true})
 
