@@ -57,7 +57,6 @@ module.exports = {
 
     getCategoryById : async (req, res)=>{
        const {category_id} = {...req.params};
-       console.log(req.params,"check the params")
        try{
         const category = await Category.findById(category_id)
         if(category)
