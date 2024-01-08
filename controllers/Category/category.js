@@ -55,13 +55,39 @@ module.exports = {
        }
     },
 
+    getCategoryById : async (req, res)=>{
+       const {category_id} = {...req.params};
+       try{
+        const category = await Category.findById(category_id)
+        if(category)
+        {
+        res.status(200).json({
+         error:false,
+         message:"data found",
+         data:category
+        })
+     }
+     else{
+         res.status(400).json({
+             error:true,
+             message:"data not found",
+         })
+     }
+       }catch(error){
+         res.status(500).json({
+            error:true,
+            message: "Please provide correct information"
+         })
+       }
+    },
+
     updateCategory : async (req,res)=>{
         let data = {}
         const {_id,title,slug,description} = req.body;
         data={
             _id:_id,
             title:title,
-            slug,slug,
+            slug:slug,
             description:description
         }
         try{
@@ -85,4 +111,28 @@ module.exports = {
              })
         }
     },
+
+    deleteCategory: async (req, res) => {
+        const { category_id } = req.params;
+        try {
+          const result = await Category.findByIdAndDelete(category_id);
+          if (!result) {
+            res.status(404).json({
+              error: true,
+              message: "Category not found",
+            });
+          } else {
+            res.status(200).json({
+              error: false,
+              message: "Category deleted successfully",
+            });
+          }
+        } catch (error) {
+          res.status(500).json({
+            error: true,
+            message: "Something went wrong, please try again later.",
+          });
+        }
+      }
+      
 }
