@@ -74,6 +74,7 @@ module.exports = {
     },
     get_blog_by_id : async(req,res) => {
         const {_id} = req.body;
+        console.log(req.body,"check the id inside the get blog by id")
         try{
            await Blog.findById(_id).then((result)=>{
               if(result!==null)
