@@ -75,7 +75,7 @@ module.exports = {
     get_blog_by_id : async(req,res) => {
         const {_id} = req.body;
         try{
-           await Blog.findById(_id).then((result)=>{
+           await Blog.findById(_id).populate("category").then((result)=>{
               if(result!==null)
               {
                 res.status(200).json({
@@ -99,13 +99,16 @@ module.exports = {
     },
     update_blog : async(req,res)=>{
     let data = {};
-      const {_id,title,slug,description,content} = req.body;
+      const {_id,title,slug,description,content,tags,category,forArtist} = req.body;
       data={
         _id:_id,
         title:title,
         slug:slug,
         description:description,
         content:content,
+        tags,tags,
+        category,category,
+        forArtist:forArtist,
       }
       if (req.files) {
         try {
