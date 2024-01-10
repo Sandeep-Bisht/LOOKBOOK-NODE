@@ -3,6 +3,7 @@ const {uploadFilesToImagekit} = require('../../config/upload')
 
 module.exports = {
     create : async(req,res) => {
+      console.log(req.body,"check inside the blog checking create")
         try {
             var data = {...req.body}
             if (req.files) {
@@ -106,8 +107,8 @@ module.exports = {
         slug:slug,
         description:description,
         content:content,
-        tags,tags,
-        category,category,
+        tags:tags,
+        category:category,
         forArtist:forArtist,
       }
       if (req.files) {
