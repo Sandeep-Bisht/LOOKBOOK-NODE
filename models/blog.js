@@ -27,6 +27,13 @@ const BlogSchema = new Schema({
         required: true,
         type : String
     },
+    tags: {
+        type : Array,
+    },
+    forArtist:{
+       type: Boolean,
+       default : false,
+    },
     status:{
         type : String,
         required : true,
