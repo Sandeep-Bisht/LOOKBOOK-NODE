@@ -2,25 +2,65 @@ const ArtistRequest = require('../../../models/artist_requests');
 const AllServices = require('../../../models/services');
 const AllUsers = require('../../../models/Users');
 const AllBlogs = require('../../../models/blog');
-const userRoles = require('../../../models/user_roles')
-const Artists = require('../../../models/artists')
+const Artists = require('../../../models/artists');
+const Profile = require('../../../models/profile')
 
 exports.getAdminDashboardInitialData = async (req, res) => {
   try {
-    const artistRequestCount = await ArtistRequest.countDocuments();
-    const servicesCount = await AllServices.countDocuments();
-    const usersCount = await AllUsers.countDocuments();
-    const blogsCount = await AllBlogs.countDocuments();
-    const userRolesCount = await userRoles.countDocuments();
-    const artistsCount = await Artists.countDocuments();
 
+       const artistRequestCount = await ArtistRequest.countDocuments({ status: 'pending' });   
+       const pendingArtist = await ArtistRequest.find().populate('services').populate("profile_id");
+       const artistRejectCount = await ArtistRequest.countDocuments({ status: 'reject' });
+       const servicesCount = await AllServices.countDocuments();
+       const usersCount = await AllUsers.countDocuments();
+       const blogsCount = await AllBlogs.countDocuments();
+       const artistsCount = await Artists.countDocuments();
+       const featuredArtistsCount = await Artists.countDocuments({ featuredTag: true });
+       const emergingArtistsCount = await Artists.countDocuments({ emergingTag: true });
+       const featuredArtists = await Artists.find({ featuredTag: true }).populate("services").populate("profile_id");
+       const emergingArtists = await Artists.find({ emergingTag: true }).populate("services").populate("profile_id");
+  
+       const allArtists = await Artists.find({status : 'active'});
+        
+       // Create a map to store the count of artists for each state and country
+       const stateCountsMap = new Map();
+       
+       // Iterate through each artist and update the map
+       allArtists.forEach(artist => {
+           const state = artist.address && artist.address.state;
+           const country = artist.address && artist.address.country;
+           if (state) {
+               const key = `${country}-${state}`; // Use a combination of country and state as the key
+               stateCountsMap.set(key, (stateCountsMap.get(key) || 0) + 1);
+           }
+       });
+       
+       // Convert the map to an array of objects
+       const artistsPerState = Array.from(stateCountsMap.entries()).map(([key, count]) => {
+           const [country, stateName] = key.split('-');
+           return {
+               country,
+               stateName,
+               count
+           };
+       });
+       
+      
     const data = {
+      totalArtistRequest : artistRequestCount + artistsCount + artistRejectCount,
+      artistRejectCount,
       artistRequestCount,
       servicesCount,
       usersCount,
       blogsCount,
-      userRolesCount,
       artistsCount,
+      featuredArtistsCount,
+      featuredArtists,
+      pendingArtist,
+      emergingArtistsCount,
+      emergingArtists,
+      artistsPerState // Call toArray() here
+    
     };
 
     console.log("Admin Dashboard Initial Data:", data);
