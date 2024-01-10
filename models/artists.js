@@ -65,6 +65,10 @@ const ArtistSchema = new Schema({
     featuredTag: {
         type: Boolean,
         default: false, // or true, depending on your default value
+      },
+      emergingTag: {
+        type: Boolean,
+        default: false, // or true, depending on your default value
       }
 
 }, { timestamps : true})
