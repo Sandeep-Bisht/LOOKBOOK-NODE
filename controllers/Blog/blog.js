@@ -1,9 +1,9 @@
 const Blog = require('../../models/blog')
 const {uploadFilesToImagekit} = require('../../config/upload')
+const Category = require('../../models/category')
 
 module.exports = {
     create : async(req,res) => {
-      console.log(req.body,"check inside the blog checking create")
         try {
             var data = {...req.body}
             if (req.files) {
@@ -185,6 +185,38 @@ module.exports = {
           message: "Error finding Blogs for this Category ID."
         });
       }
-    }
+    },
+
+     get_Blog_By_CategorySlug : async (req, res) => {
+      const { category_slug } = req.params;
+      try {
+        const category = await Category.findOne({ slug: category_slug });
     
+        if (!category) {
+          return res.status(404).json({
+            error: true,
+            message: "Category not found for this slug."
+          });
+        }
+    
+        const blogs = await Blog.find({ category: category._id }).populate("category");
+    
+        if (!blogs || blogs.length === 0) {
+          return res.status(404).json({
+            error: true,
+            message: "No Blogs found for this Category Slug."
+          });
+        }
+    
+        return res.status(200).json(blogs);
+      } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({
+          error: true,
+          message: "Internal Server Error."
+        });
+      }
+
+    }
+  
 }
