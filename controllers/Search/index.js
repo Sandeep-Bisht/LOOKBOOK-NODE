@@ -28,7 +28,7 @@ exports.findArtist = async (req, res) => {
         return res.status(400).json({ error: 'Invalid Data.' });
       }
 
-      let query = {};
+      let query = { status: 'active' }; 
   
       // Build the query based on the provided parameters
       if (location) {
@@ -43,7 +43,7 @@ exports.findArtist = async (req, res) => {
         }
       }
   
-      const foundArtists = await Artists.find(query);
+      const foundArtists = await Artists.find(query).populate('profile_id').exec();
   
       if (foundArtists.length > 0) {
         res.status(200).json(foundArtists);
