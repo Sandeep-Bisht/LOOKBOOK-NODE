@@ -6,6 +6,7 @@ const UserRoles = require('../../models/user_roles')
 exports.setProfile = async (req, res) => {
     try{
         var data = {...req.body}
+        delete data.image;
 
         if (req.files) {
             let fileUploadResponse = await uploadFilesToImagekit(req);
