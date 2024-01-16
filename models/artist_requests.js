@@ -24,6 +24,10 @@ const ArtistRequestSchema = new Schema({
             ref : "products" 
         }
     ],
+    featuredService:{
+        type : Schema.Types.ObjectId,
+        ref : "services" 
+    },
     coords:JSON,
     travel:Boolean,
     experience:String,

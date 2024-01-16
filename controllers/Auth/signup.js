@@ -1,11 +1,11 @@
 var jwt = require('jsonwebtoken');
 let users = require('../../models/Users');
-const nodemailer = require("nodemailer");
 const NodeCache = require('node-cache');
 const Cache = new NodeCache();
 const sendOTP = require('../../config/sendOTP');
 const createNewUser = require('../../services/createNewUser')
 const UserRoles = require('../../models/user_roles')
+const transporter = require('../../config/nodeMailer');
 
 exports.signup = async (req, res) => {
     try{
@@ -35,14 +35,6 @@ exports.signup = async (req, res) => {
             }
 
             if(emailRegex.test(username)){
-                const transporter = nodemailer.createTransport({
-                    service: "gmail",
-                    port: 587,
-                    auth: {
-                      user: "nick976055@gmail.com",
-                      pass: "Giks@123",
-                    },
-                  });
         
                   const mailOptions = {
                     from: "nick976055@gmail.com",

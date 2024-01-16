@@ -20,6 +20,11 @@ const ArtistSchema = new Schema({
             ref : "services" 
         }
     ],
+    featuredService:{
+        type : Schema.Types.ObjectId,
+        ref : "services" ,
+        required:true
+    },
     products:[
         {
             required:true,
@@ -65,11 +70,11 @@ const ArtistSchema = new Schema({
     featuredTag: {
         type: Boolean,
         default: false, // or true, depending on your default value
-      },
-      emergingTag: {
+    },
+    emergingTag: {
         type: Boolean,
         default: false, // or true, depending on your default value
-      }
+    }
 
 }, { timestamps : true})
 
