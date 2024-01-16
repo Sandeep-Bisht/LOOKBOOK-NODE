@@ -48,7 +48,7 @@ exports.verifyRequest = async (req, res) => {
                     if(payload.status == 'approved'){
                         let existingRequest = await ArtistRequest.findById(payload.request_id);
 
-                        const keysToCopy = ['user_id', 'profile_id','services','products','coords','travel','experience','education','languages','gallery','description','pricing','adharFront','adharBack','panCard','certificates'];
+                        const keysToCopy = ['user_id', 'profile_id','services','products','coords','travel','experience','education','languages','gallery','description','pricing','adharFront','adharBack','panCard','certificates','featuredService'];
                     
                         const newObject = {};
 
@@ -89,6 +89,16 @@ exports.verifyRequest = async (req, res) => {
                         else{
                             newObject['address'] = {city:null, state:null, country:null, postalCode:null};
                         }
+
+                        let artistPricing = []
+                        if(Array.isArray(newObject['services'])){
+                          newObject['services'].map((item) => artistPricing.push({'service':item,...newObject['pricing'],'sessionTime':3}))
+                        }
+                        else{
+                          artistPricing.push({'service':newObject['featuredService'],...newObject['pricing'],'sessionTime':3})
+                        }
+                        
+                        newObject['pricing'] = artistPricing;
 
                         const newArtist = new Artists(newObject);
                         const result = await newArtist.save();

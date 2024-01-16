@@ -37,7 +37,7 @@ exports.updateArtistRequest = async (req, res) => {
           if(existingRequest){
             let existingRequestData = {...existingRequest._doc};
             
-            if(existingRequestData.user_id.equals(req.user._id) && existingRequestData.profile_id && existingRequestData.services.length > 0 && existingRequestData.products.length > 0 && existingRequestData.coords?.lat && existingRequestData.coords?.lng && existingRequestData.gallery.length > 2 && existingRequestData.description && existingRequestData.pricing && existingRequestData.adharFront && existingRequestData.adharBack && existingRequestData.panCard){
+            if(existingRequestData.user_id.equals(req.user._id) && existingRequestData.profile_id && existingRequestData.services.length > 0 && existingRequestData.products.length > 0 && existingRequestData.coords?.lat && existingRequestData.coords?.lng && existingRequestData.gallery.length > 2 && existingRequestData.description && existingRequestData.pricing && existingRequestData.adharFront && existingRequestData.adharBack && existingRequestData.panCard && existingRequestData.featuredService){
               let profile = await profiles.findOne({'user_id': req.user._id});
               let profileData = {...profile._doc}
 
@@ -167,41 +167,6 @@ exports.updateArtistRequest = async (req, res) => {
     }
 };
   
-exports.updateArtistRequestStatus = async (req, res) => {
-    try {
-        const status = req.params.status;
-  
-      // Find the document by user_id and status
-      let existingRequest = await ArtistRequest.findOneAndUpdate(
-        { 'user_id': req.user._id, 'status': 'progress' },
-        { $set: {'status':status} },
-        { new: true }
-      );
-  
-      if (!existingRequest) {
-
-        return res.status(400).json({
-            status: 400,
-            message: "No open request found."
-          });
-
-      } 
-
-      return res.status(200).json({
-        error: true,
-        message: "Request status updated successfully.",
-        data:existingRequest
-      });
-
-    } catch (err) {
-      console.error(err);
-      return res.status(500).json({
-        error: true,
-        message: "Something went wrong. Please try again later."
-      });
-    }
-};
-
 exports.getAllArtistRequest = async (req,res) =>{
   try{
     ArtistRequest.find().populate('services').populate('products').populate('profile_id').then((result)=>{
