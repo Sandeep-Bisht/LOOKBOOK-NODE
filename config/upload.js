@@ -11,9 +11,9 @@ exports.upload = upload;
 
 // Initialize the ImageKit.io client with your API Key and API Secret
 const imagekitClient = new imagekit({
-    publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
-    privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
-    urlEndpoint: process.env.IMAGEKIT_ENDPOINT,
+    publicKey: process.env.IMAGEKIT_PUBLIC_KEY || "Checkyourenvfile",
+    privateKey: process.env.IMAGEKIT_PRIVATE_KEY || "Checkyourenvfile",
+    urlEndpoint: process.env.IMAGEKIT_ENDPOINT || "Checkyourenvfile",
   });
 
 

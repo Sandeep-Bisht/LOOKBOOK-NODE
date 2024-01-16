@@ -20,7 +20,7 @@ exports.verifyRequest = async (req, res) => {
     try{
         let userRole = await userRoles.findOne({'user_id':req.user._id});
 
-        if(userRole.role_id.equals(process.env.ROLE_ADMIN)){
+        if(userRole.role_id.equals(process.env.ROLE_ADMIN || "Checkyourenvfile")){
 
             const validateRequest = await requiredSchema.validate({...req.body});
 
@@ -58,7 +58,7 @@ exports.verifyRequest = async (req, res) => {
                             }
                         });
 
-                        const FindAddress = await axios.get( `https://maps.googleapis.com/maps/api/geocode/json?latlng=${existingRequest.coords.lat},${existingRequest.coords.lng}&key=${process.env.GOOGLE_MAP_API_KEY}`);
+                        const FindAddress = await axios.get( `https://maps.googleapis.com/maps/api/geocode/json?latlng=${existingRequest.coords.lat},${existingRequest.coords.lng}&key=${process.env.GOOGLE_MAP_API_KEY || "Checkyourenvfile"}`);
 
                         if (FindAddress.data.status === 'OK') {
                              const addressResult = FindAddress.data.results;
@@ -105,7 +105,7 @@ exports.verifyRequest = async (req, res) => {
 
                         await userRoles.findOneAndUpdate(
                             {'user_id': result.user_id},
-                            { $set: {'role_id':process.env.ROLE_ARTIST} },
+                            { $set: {'role_id':process.env.ROLE_ARTIST || "Checkyourenvfile"} },
                             { new: true }
                           );
 
@@ -149,7 +149,7 @@ exports.artistRequestById = async (req,res) =>{
     try{
         let userRole = await userRoles.findOne({'user_id':req.user._id});
 
-        if(userRole.role_id.equals(process.env.ROLE_ADMIN)){
+        if(userRole.role_id.equals(process.env.ROLE_ADMIN || "Checkyourenvfile")){
 
         const request_id = req.params.request_id;
         const request = await ArtistRequest.findById(request_id).populate('services').populate('products').populate('profile_id');

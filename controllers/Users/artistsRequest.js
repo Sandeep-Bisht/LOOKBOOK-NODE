@@ -5,7 +5,7 @@ const profiles = require('../../models/profile')
 
 exports.getArtistRequests = async (req, res) => {
     try{
-        const existingRequest = await ArtistRequest.find({'user_id':req.user._id});
+        const existingRequest = await ArtistRequest.find({'user_id':req.user._id}).populate("profile_id");
         return res.send(existingRequest);
         
     }
@@ -145,7 +145,18 @@ exports.updateArtistRequest = async (req, res) => {
             });
           });
       } else {
-        // Update the existing document
+        // check artist request is pending
+
+        let pendingRequest = await ArtistRequest.findOne({ 'user_id': req.user._id, 'status': 'pending' });
+        if(pendingRequest){
+          return res.status(400).json({
+            error:true,
+            message:'Your request is still pending. You can raise a request if your request is cancelled or not started.',
+          })
+        }
+        else{
+
+        // Update the existing document`
         existingRequest = await ArtistRequest.findOneAndUpdate(
           { 'user_id': req.user._id, 'status': 'progress' },
           { $set: updateFields },
@@ -157,6 +168,7 @@ exports.updateArtistRequest = async (req, res) => {
           message: "Request updated successfully",
           data: existingRequest
         });
+        }
       }
     } catch (err) {
       console.error(err);

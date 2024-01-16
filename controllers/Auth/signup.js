@@ -45,6 +45,7 @@ exports.signup = async (req, res) => {
         
                    transporter.sendMail(mailOptions,(err,info)=>{
                     if (err) {
+                        console.log("this is error ", err)
                         return res.status(500).json({
                             err,
                             error:true,
@@ -125,7 +126,7 @@ exports.signupVerify = async(req,res) => {
 
                     try{
                         let roleId = await UserRoles.findOne({ user_id: result._id });
-                        let token = jwt.sign({userID:result._id,role:roleId.role_id},process.env.JWT_KEY,{ expiresIn: "30d" })
+                        let token = jwt.sign({userID:result._id,role:roleId.role_id},process.env.JWT_KEY || "Checkyourenvfile",{ expiresIn: "30d" })
                         return res.status(200).json({
                                           error: false,
                                           token: token,

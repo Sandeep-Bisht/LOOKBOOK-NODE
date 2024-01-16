@@ -4,7 +4,7 @@ const users = require('../models/Users')
 module.exports = (passport) =>{
     passport.use(
         new Strategy({
-            secretOrKey:process.env.JWT_KEY,
+            secretOrKey:process.env.JWT_KEY || "Checkyourenvfile",
             jwtFromRequest:ExtractJwt.fromAuthHeaderAsBearerToken()
         },
         (jwt_payload,next) =>{
