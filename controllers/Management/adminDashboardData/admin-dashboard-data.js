@@ -63,7 +63,6 @@ exports.getAdminDashboardInitialData = async (req, res) => {
     
     };
 
-    console.log("Admin Dashboard Initial Data:", data);
 
     res.status(200).json({
       error: false,

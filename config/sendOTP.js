@@ -1,9 +1,9 @@
 const axios = require('axios');
 
 async function sendOTP(flowID, otp, mobile) {
-  const MSG91_API_KEY = process.env.MSG91_AUTH_KEY;
+  const MSG91_API_KEY = process.env.MSG91_AUTH_KEY || "Check your env auth key";
 
-  const url = process.env.MSG91_API_URL;
+  const url = process.env.MSG91_API_URL || "https://api.msg91.com/api/v5/flow/";
   const payload = {
     template_id: flowID,
     recipients: [

@@ -19,7 +19,7 @@ exports.facebookSignup = (req, res) => {
                     if(result){
                       try{
                         let roleId = await UserRoles.findOne({ user_id: result._id });
-                        let token = jwt.sign({userID:result._id,role:roleId.role_id},process.env.JWT_KEY,{ expiresIn: "30d" })
+                        let token = jwt.sign({userID:result._id,role:roleId.role_id},process.env.JWT_KEY || "Checkyourenvfile",{ expiresIn: "30d" })
                         return res.status(200).json({
                                           error: false,
                                           token: token,

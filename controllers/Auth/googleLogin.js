@@ -6,8 +6,8 @@ const UserRoles = require('../../models/user_roles')
 
 // initialize oathclient
 const oAuth2Client = new OAuth2Client(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_CLIENT_ID || "Checkyourenvfile",
+    process.env.GOOGLE_CLIENT_SECRET || "Checkyourenvfile",
     'postmessage',
 );
 
@@ -24,7 +24,7 @@ exports.googleSignup = async (req, res) => {
                     if(result){
                         try{
                             let roleId = await UserRoles.findOne({ user_id: result._id });
-                            let token = jwt.sign({userID:result._id,role:roleId.role_id},process.env.JWT_KEY,{ expiresIn: "30d" })
+                            let token = jwt.sign({userID:result._id,role:roleId.role_id},process.env.JWT_KEY || "Checkyourenvfile",{ expiresIn: "30d" })
                             return res.status(200).json({
                                               error: false,
                                               token: token,
