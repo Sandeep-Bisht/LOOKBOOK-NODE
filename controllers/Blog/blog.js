@@ -1,6 +1,7 @@
 const Blog = require('../../models/blog')
 const {uploadFilesToImagekit} = require('../../config/upload')
 const Category = require('../../models/category')
+const Comment = require('../../models/comments')
 
 module.exports = {
     create : async(req,res) => {
@@ -146,29 +147,32 @@ module.exports = {
          })
       }
     },
-    get_blog_by_slug: async(req,res)=>{
-        try{
+    get_blog_by_slug: async (req, res) => {
+      try {
           const slug = req.params.slug;
-           await Blog.findOne({slug}).then((result)=>{
-              if(result!==null)
-              {
-                res.status(200).json(result)
-              }else{
-                res.status(400).json({
-                    error:true,
-                    message:"Data not found"
-                })
+          await Blog.findOne({ slug }).then(async (result) => {
+              if (result !== null) {
+                  const { _id } = result;
+                  const approvedComments = await Comment.find({ blog: _id,status:"approved" });
+                  res.status(200).json({
+                      data: result,
+                      comments: approvedComments,
+                  });
+              } else {
+                  res.status(400).json({
+                      error: true,
+                      message: "Data not found",
+                  });
               }
-           })
-        }catch(error){
-            res.status(500).json({
-                error:true,
-                message:"Something went wrong, please try again later."
-            })
-        }
-    },
-    
-    get_Blog_CategoryById: async (req, res) => {
+          });
+      } catch (error) {
+          res.status(500).json({
+              error: true,
+              message: "Something went wrong, please try again later.",
+          });
+      }
+  },
+   get_Blog_CategoryById: async (req, res) => {
       const { category_id } = req.params;
       try {
         const blogs = await Blog.find({ category: category_id }).populate("category");
