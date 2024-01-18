@@ -153,13 +153,7 @@ module.exports = {
           await Blog.findOne({ slug }).then(async (result) => {
               if (result !== null) {
                   const { _id } = result;
-                  const comments = await Comment.find({ blog: _id });
-                  let approvedComments = [];
-                  if (comments && comments.length > 0) {
-                      approvedComments = comments.filter((comment) => {
-                          return comment.status === "approved";
-                      });
-                  }
+                  const approvedComments = await Comment.find({ blog: _id,status:"approved" });
                   res.status(200).json({
                       data: result,
                       comments: approvedComments,

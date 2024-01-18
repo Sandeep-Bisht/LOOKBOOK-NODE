@@ -52,7 +52,7 @@ module.exports = {
     updateCommentById : async(req,res)=>{
       const {_id,status} = req.body;
       try{
-        Comments.findByIdAndUpdate(_id,{ status }).then((result)=>{
+        Comments.findByIdAndUpdate(_id,{$set:{ status }},{new : true}).then((result)=>{
             if(result){
                 res.status(200).json({
                   data:result,
