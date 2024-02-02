@@ -5,7 +5,7 @@ exports.getAll = async (req, res) => {
   try {
     const allArtists = await Artists.find({ status: "active" }).populate(
       "profile_id"
-    );
+    ).populate("featuredService");
     return res.status(200).json(allArtists);
   } catch (err) {
     res.status(500).json({
