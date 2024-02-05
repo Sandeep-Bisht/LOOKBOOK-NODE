@@ -3,7 +3,6 @@ const AllServices = require('../../../models/services');
 const AllUsers = require('../../../models/Users');
 const AllBlogs = require('../../../models/blog');
 const Artists = require('../../../models/artists');
-const Profile = require('../../../models/profile')
 
 exports.getAdminDashboardInitialData = async (req, res) => {
   try {
@@ -70,7 +69,6 @@ exports.getAdminDashboardInitialData = async (req, res) => {
       data,
     });
   } catch (error) {
-    console.error("Error:", error);
     res.status(500).json({
       error: true,
       message: "Internal server error",

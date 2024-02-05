@@ -11,6 +11,11 @@ const ProductsSchema = new Schema({
     },
     icon: JSON,
     image: JSON,
+    slug:{
+        type : String,
+        required : true,
+        unique:true, 
+    },
     status:{
         type : String,
         required : true,

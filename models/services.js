@@ -11,10 +11,15 @@ const ServicesSchema = new Schema({
     },
     icon: JSON,
     image: JSON,
+    slug:{
+        type : String,
+        required : true,
+        unique:true, 
+    },
     status:{
         type : String,
         required : true,
-        default:'Active',
+        default:'active',
     },
     createdBy: {
         required : true,

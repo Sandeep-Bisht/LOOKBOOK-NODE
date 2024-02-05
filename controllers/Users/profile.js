@@ -16,6 +16,8 @@ exports.setProfile = async (req, res) => {
             }
         }
 
+
+
         updateProfile({user:req.user,profile:data}).then((response)=>{
             return res.status(response.status).json(response);
         })

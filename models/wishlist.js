@@ -15,8 +15,6 @@ const WishlistSchema = new Schema({
             ref : "artists" 
         }
     ],  
- 
-   
 
 }, { timestamps : true})
 

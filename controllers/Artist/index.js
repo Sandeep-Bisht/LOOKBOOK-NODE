@@ -118,7 +118,6 @@ exports.updatePricing = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("Error in updating Pricing:", error);
     res.status(500).json({
       error: true,
       message: "Internal Server Error.",

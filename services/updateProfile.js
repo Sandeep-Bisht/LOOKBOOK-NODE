@@ -15,6 +15,8 @@ const updateProfile = async (data) => {
       };
     }
 
+
+
     const profileResult = await Profile.findOneAndUpdate({_id:existingProfile._id},{$set:profile}, { new: true });
 
     if (!profileResult) {
@@ -32,6 +34,18 @@ const updateProfile = async (data) => {
     };
     
   } catch (error) {
+
+    if (error.name === 'MongoServerError' && error.code === 11000) {
+      const duplicateKey = Object.keys(error.keyValue)[0];
+      return {
+      error: true,
+      errorCode:"DUPLICATE",
+      duplicateKey:duplicateKey,
+      status: 500,
+      message: 'Duplicate entry.',
+    };
+    }
+
     return {
       error: true,
       errorMessage:error.message,

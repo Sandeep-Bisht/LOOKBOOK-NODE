@@ -1,6 +1,5 @@
 const { uploadFilesToImagekit } = require('../../config/upload');
 const ArtistRequest = require('../../models/artist_requests');
-const userRoles = require('../../models/user_roles')
 const profiles = require('../../models/profile')
 
 exports.getArtistRequests = async (req, res) => {
@@ -41,7 +40,7 @@ exports.updateArtistRequest = async (req, res) => {
               let profile = await profiles.findOne({'user_id': req.user._id});
               let profileData = {...profile._doc}
 
-              if(profileData.fullName && profileData.email && profileData.instaId && profileData.mobile && profileData.gender && profileData.dob && profileData.status == 'Active'){
+              if(profileData.fullName && profileData.alias && profileData.email && profileData.instaId && profileData.mobile && profileData.gender && profileData.dob && profileData.status == 'Active'){
                 updateFields['status'] = 'pending';
               }
               else{
@@ -171,7 +170,6 @@ exports.updateArtistRequest = async (req, res) => {
         }
       }
     } catch (err) {
-      console.error(err);
       return res.status(500).json({
         error: true,
         message: "Something went wrong. Please try again later."
