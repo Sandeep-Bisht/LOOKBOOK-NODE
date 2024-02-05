@@ -26,7 +26,11 @@ const ProfileSchema = new Schema({
     dob: {
         type: String,
     },
-    alias: String,
+    alias: {
+        unique : true,
+        type : String,
+        sparse: true
+    },
     image:{
         type : JSON,
     },

@@ -13,7 +13,6 @@ exports.getInitialData = async (_, res) => {
         return res.status(200).json({ cities: distinctCities, services:allServices });
 
       } catch (error) {
-        console.error(error);
         return res.status(500).json({ error: 'Internal Server Error' });
       }
 }
@@ -51,7 +50,6 @@ exports.findArtist = async (req, res) => {
         res.status(404).json({ error: 'Artists not found.' });
       }
     } catch (error) {
-      console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
 }

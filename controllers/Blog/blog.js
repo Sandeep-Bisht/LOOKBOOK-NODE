@@ -214,7 +214,6 @@ module.exports = {
     
         return res.status(200).json(blogs);
       } catch (error) {
-        console.error("Error:", error);
         res.status(500).json({
           error: true,
           message: "Internal Server Error."

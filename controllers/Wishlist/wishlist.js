@@ -89,7 +89,6 @@ module.exports={
         }
       } ) 
     } catch (error) {
-      console.error("Error:", error);
       res.status(500).json({
         error: true,
         message: "Internal server error",
@@ -123,7 +122,6 @@ module.exports={
         });
       }
     } catch (error) {
-      console.error("Error:", error);
       res.status(500).json({
         error: true,
         message: "Internal server error",

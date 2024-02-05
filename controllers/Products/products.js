@@ -1,5 +1,6 @@
 const Products = require("../../models/products");
 const {uploadFilesToImagekit} = require('../../config/upload');
+const slugify = require('slugify');
 
 module.exports={
   
@@ -15,6 +16,11 @@ module.exports={
           if(image) data = {...data,image:image.response};
         }
       }
+
+      data.slug = slugify(data.title, {
+        lower: true,    // Convert to lowercase
+        strict: true    // Remove special characters
+      });
   
       Products.create(data).then((result)=>{
         if (result) {
@@ -90,7 +96,6 @@ module.exports={
         }
       } ) 
     } catch (error) {
-      console.error("Error:", error);
       res.status(500).json({
         error: true,
         message: "Internal server error",
@@ -106,6 +111,11 @@ module.exports={
       _id: _id,
       title: title,
     };
+
+    data.slug = slugify(data.title, {
+      lower: true,    // Convert to lowercase
+      strict: true    // Remove special characters
+    });
   
     if (req.files) {
       try {

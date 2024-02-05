@@ -163,7 +163,6 @@ exports.artistRequestById = async (req,res) =>{
         }
     }
     catch(err){
-        console.error(err);
         return res.status(500).json({
           error: true,
           message: "Something went wrong. Please try again later."
@@ -197,7 +196,6 @@ exports.markFeaturedArtist = async (req, res) => {
         });
       }
     } catch (error) {
-      console.log("Error:", error);
       res.status(500).json({
         error: true,
         message: "Internal server error",
@@ -230,7 +228,6 @@ exports.markFeaturedArtist = async (req, res) => {
         });
       }
     } catch (error) {
-      console.log("Error:", error);
       res.status(500).json({
         error: true,
         message: "Internal server error",
