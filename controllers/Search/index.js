@@ -8,7 +8,7 @@ exports.getInitialData = async (_, res) => {
 
         const distinctCities = await Artists.distinct('address.city', { status: 'active', 'address': { $exists: true, $ne: null } });
         
-        const allServices = await Services.find({status:'Active'}).select('title icon');
+        const allServices = await Services.find({status:'Active'}).select('title icon slug');
         
         return res.status(200).json({ cities: distinctCities, services:allServices });
 
