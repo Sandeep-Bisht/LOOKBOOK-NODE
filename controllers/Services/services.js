@@ -1,5 +1,6 @@
 const Services = require("../../models/services");
 const {uploadFilesToImagekit} = require('../../config/upload');
+const slugify = require('slugify');
 
 module.exports={
   
