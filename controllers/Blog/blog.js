@@ -48,25 +48,30 @@ module.exports = {
     },
     get_all_blog : async(req,res) => {
         try {
-            Blog.find().populate("category").then((result)=> {
-                if(result){
-                    res.status(200).json({
-                        error : false,
-                        message : "Data found",
-                        data : result
-                    })
-                } else {
-                    res.status(400).json({
-                        error : true,
-                        message : "Something went wrong"
-                    })
-                }
-            }).catch((error)=>{
-                res.status(400).json({
-                    error:true,
-                    message :"Somthing went wrong"
-                })
+          const blogs = await Blog.find().populate("category"); 
+
+          if(!blogs){
+            return res.status(400).json({
+              error : true,
+              message : "Bad request."
             })
+          }
+
+          const promises = blogs.map(async (data) => {
+            // Perform some asynchronous operation
+            let dataCopy = {...data._doc}
+            dataCopy['comments'] = await Comment.find({ blog: data._id, status:'approved' });
+            return dataCopy;
+        });
+
+        const results = await Promise.all(promises);
+      
+          return res.status(200).json({
+            error : false,
+            message : "Data found",
+            data : results
+        });
+
         } catch (error) {
             res.status(400).json({
                 error : false,
@@ -149,30 +154,63 @@ module.exports = {
     },
     get_blog_by_slug: async (req, res) => {
       try {
-          const slug = req.params.slug;
-          await Blog.findOne({ slug }).then(async (result) => {
-              if (result !== null) {
-                  const { _id } = result;
-                  const approvedComments = await Comment.find({ blog: _id,status:"approved" });
-                  res.status(200).json({
-                      data: result,
-                      comments: approvedComments,
-                  });
-              } else {
-                  res.status(400).json({
-                      error: true,
-                      message: "Data not found",
-                  });
-              }
-          });
+          const {category_slug, slug} = req.params;
+
+          const category = await Category.findOne({ slug: category_slug });
+    
+          if (!category) {
+            return res.status(400).json({
+              error: true,
+              message: "Category not found for this slug."
+            });
+          }
+          
+          let similarBlogs = await Blog.find({ category: category._id }).populate("category");
+
+          if (!similarBlogs) {
+            return res.status(400).json({
+              error: true,
+              message: "Bad request."
+            });
+          }
+
+          let currentBlog = similarBlogs.find((item) => item.slug === slug);
+
+          if(!currentBlog){
+            return res.status(400).json({
+              error: true,
+              message: "Bad request."
+            });
+          }
+
+
+        const promises = similarBlogs.map(async (data) => {
+          // Perform some asynchronous operation
+          let dataCopy = {...data._doc}
+          dataCopy['comments'] = await Comment.find({ blog: data._id, status:'approved' });
+          return dataCopy;
+        });
+
+        const results = await Promise.all(promises);
+
+        currentBlog = results.find((item) => item.slug === slug);
+        similarBlogs = results.filter((item) => item.slug !== slug);
+        
+        return res.status(200).json({
+          error : false,
+          similarBlogs,
+          currentBlog,
+          message : "Data found successfully."
+        })
+
       } catch (error) {
           res.status(500).json({
               error: true,
               message: "Something went wrong, please try again later.",
           });
       }
-  },
-   get_Blog_CategoryById: async (req, res) => {
+    },
+    get_Blog_CategoryById: async (req, res) => {
       const { category_id } = req.params;
       try {
         const blogs = await Blog.find({ category: category_id }).populate("category");
@@ -190,7 +228,6 @@ module.exports = {
         });
       }
     },
-
      get_Blog_By_CategorySlug : async (req, res) => {
       const { category_slug } = req.params;
       try {
@@ -204,15 +241,30 @@ module.exports = {
         }
     
         const blogs = await Blog.find({ category: category._id }).populate("category");
-    
-        if (!blogs || blogs.length === 0) {
-          return res.status(404).json({
-            error: true,
-            message: "No Blogs found for this Category Slug."
-          });
+
+        if(!blogs){
+          return res.status(400).json({
+            error : true,
+            message : "Bad request."
+          })
         }
+
+        const promises = blogs.map(async (data) => {
+          // Perform some asynchronous operation
+          let dataCopy = {...data._doc}
+          dataCopy['comments'] = await Comment.find({ blog: data._id, status:'approved'});
+          return dataCopy;
+      });
+
+      const results = await Promise.all(promises);
     
-        return res.status(200).json(blogs);
+        return res.status(200).json({
+          error : false,
+          message : "Data found",
+          data : results
+      });
+
+    
       } catch (error) {
         res.status(500).json({
           error: true,
@@ -220,6 +272,16 @@ module.exports = {
         });
       }
 
+    },
+    addView : async (req,res) =>{
+      try{
+        const {category_slug, slug} = req.params;
+        
+
+      }
+      catch(error){
+
+      }
     }
   
 }
