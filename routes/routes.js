@@ -11,7 +11,7 @@ const WishlistRoutes = require('../controllers/Wishlist/routes');
 const Category = require('../controllers/Category/routes')
 const CommentRoutes = require('../controllers/Comments/routes')
 const QueryRoutes = require('../controllers/Queries/routes')
-const SlidersRoutes = require('../controllers/Sliders/routes')
+const slidesRoutes = require('../controllers/slides/routes')
 
 router.use('/auth',AuthRoutes);
 router.use('/users',UsersRoutes);
@@ -25,6 +25,6 @@ router.use('/wishlist', WishlistRoutes);
 router.use('/category',Category);
 router.use('/comment',CommentRoutes);
 router.use('/queries',QueryRoutes);
-router.use('/slider',SlidersRoutes);
+router.use('/slides',slidesRoutes);
 
 module.exports = router

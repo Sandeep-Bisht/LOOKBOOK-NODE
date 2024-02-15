@@ -1,4 +1,4 @@
-const Sliders = require("../../models/sliders");
+const slides = require("../../models/slides");
 const {uploadFilesToImagekit} = require('../../config/upload');
 
 exports.create = async (req, res) => {
@@ -12,7 +12,7 @@ exports.create = async (req, res) => {
         }
       }
   
-      Sliders.create(data).then((result)=>{
+      slides.create(data).then((result)=>{
         if (result) {
           res.status(200).json({
             status: 200,
@@ -37,14 +37,14 @@ exports.create = async (req, res) => {
     }
   },  
 
-exports.get_all_sliders = async(req,res)=>{
+exports.get_all_slides = async(req,res)=>{
     try{
-      await Sliders.find().then((result)=>{
+      await slides.find().then((result)=>{
         if(result && result.length>0)
         {
           res.status(200).json({
             error: false,
-            message:"get all sliders",
+            message:"get all slides",
             data:result
           })
         }
@@ -65,7 +65,7 @@ exports.get_all_sliders = async(req,res)=>{
 
   },
    
-exports.update_slider = async (req, res) => {
+exports.update_slides = async (req, res) => {
     let data = {};
   
     const { title, _id, status } = req.body;
@@ -91,16 +91,16 @@ exports.update_slider = async (req, res) => {
     }
   
     try {
-      const result = await Sliders.findByIdAndUpdate(_id, data);
+      const result = await slides.findByIdAndUpdate(_id, data);
       if (result) {
         return res.status(200).json({
           error: false,
-          message: "sliders updated successfully",
+          message: "slides updated successfully",
         });
       } else {
         return res.status(400).json({
           error: true,
-          message: "Error updating sliders",
+          message: "Error updating slides",
         });
       }
     } catch (error) {
@@ -111,10 +111,10 @@ exports.update_slider = async (req, res) => {
     }
   }
 
-exports.get_slider_by_id = async (req, res) => {
-    const { _id } = req.body;
+exports.get_slides_by_id = async (req, res) => {
+    const { _id } = req.params;
     try {  
-      await Sliders.findById(_id).then((result)=>
+      await slides.findById(_id).then((result)=>
       {
         if (result !== null) {
           res.status(200).json({

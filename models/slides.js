@@ -2,7 +2,7 @@ const moongoose = require('mongoose');
 
 const Schema = moongoose.Schema;
 
-const SlidersSchema = new Schema({   
+const slidesSchema = new Schema({   
     title : {
         type : String,
         required : true,
@@ -24,6 +24,6 @@ const SlidersSchema = new Schema({
 }, {timestamps : true})
 
 
-const model = moongoose.model("sliders", SlidersSchema)
+const model = moongoose.model("slides", slidesSchema)
 module.exports = model;
 
