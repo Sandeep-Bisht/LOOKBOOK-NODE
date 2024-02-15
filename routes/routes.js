@@ -12,6 +12,7 @@ const Category = require('../controllers/Category/routes')
 const CommentRoutes = require('../controllers/Comments/routes')
 const QueryRoutes = require('../controllers/Queries/routes')
 const slidesRoutes = require('../controllers/slides/routes')
+const CartRoutes = require('../controllers/Cart/routes')
 
 router.use('/auth',AuthRoutes);
 router.use('/users',UsersRoutes);
@@ -26,5 +27,6 @@ router.use('/category',Category);
 router.use('/comment',CommentRoutes);
 router.use('/queries',QueryRoutes);
 router.use('/slides',slidesRoutes);
+router.use('/cart',CartRoutes);
 
 module.exports = router
