@@ -1,5 +1,6 @@
 const ArtistRequest = require('../../../models/artist_requests');
 const userRoles = require('../../../models/user_roles')
+const Role = require('../../../models/roles')
 const Artists = require('../../../models/artists')
 const Joi = require('joi');
 const { default: axios } = require('axios');
@@ -18,9 +19,19 @@ const requiredSchema = Joi.object({
 
 exports.verifyRequest = async (req, res) => {
     try{
-        let userRole = await userRoles.findOne({'user_id':req.user._id});
+        const userRole = await userRoles.findOne({'user_id':req.user._id});
 
-        if(userRole.role_id.equals(process.env.ROLE_ADMIN || "Checkyourenvfile")){
+        if(!userRole || !userRole?.role_id){
+          return res.status(401).json({
+              error:true,
+              message:"unauthorized role."
+          })
+        }
+
+        const role = await Role.findById(userRole?.role_id);
+        const artistRoleId = await Role.findOne({'role':'artist'});
+
+        if(role && artistRoleId && artistRoleId?._id && role?.role === 'admin'){
 
             const validateRequest = await requiredSchema.validate({...req.body});
 
@@ -105,7 +116,7 @@ exports.verifyRequest = async (req, res) => {
 
                         await userRoles.findOneAndUpdate(
                             {'user_id': result.user_id},
-                            { $set: {'role_id':process.env.ROLE_ARTIST || "Checkyourenvfile"} },
+                            { $set: {'role_id': artistRoleId?._id } },
                             { new: true }
                           );
 
@@ -147,9 +158,25 @@ exports.verifyRequest = async (req, res) => {
 exports.artistRequestById = async (req,res) =>{
 
     try{
-        let userRole = await userRoles.findOne({'user_id':req.user._id});
+        const userRole = await userRoles.findOne({'user_id':req.user._id});
 
-        if(userRole.role_id.equals(process.env.ROLE_ADMIN || "Checkyourenvfile")){
+        if(!userRole || !userRole?.role_id){
+          return res.status(401).json({
+            error:true,
+            message:"unauthorized role."
+        })
+        }
+
+        const role = await Role.findById(userRole?.role_id);
+
+        if(!role || !role?.role){
+          return res.status(401).json({
+            error:true,
+            message:"unauthorized role."
+        })
+        }
+
+        if(role?.role === 'admin'){
 
         const request_id = req.params.request_id;
         const request = await ArtistRequest.findById(request_id).populate('services').populate('products').populate('profile_id');

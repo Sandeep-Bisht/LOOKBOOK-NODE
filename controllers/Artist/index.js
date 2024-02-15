@@ -2,6 +2,7 @@ const Artists = require("../../models/artists");
 const Services = require("../../models/services");
 const Profile = require("../../models/profile");
 const UserRole = require("../../models/user_roles");
+const Role = require("../../models/roles");
 
 exports.getAll = async (req, res) => {
   try {
@@ -186,7 +187,16 @@ exports.getArtistByAlias = async (req,res) =>{
 
     const userRole = await UserRole.findOne({user_id:user.user_id})
 
-    if(!userRole || !userRole?.role_id.equals(process.env.ROLE_ARTIST)){
+    if(!userRole || !userRole?.role_id){
+      return res.status(400).json({
+        error: true,
+        message: "Bad Request.",
+      });
+    }
+
+    const role = await Role.findById(userRole?.role_id);
+
+    if(!role || !role?.role === 'artist'){
       return res.status(400).json({
         error: true,
         message: "Bad Request.",
