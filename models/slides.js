@@ -6,10 +6,11 @@ const slidesSchema = new Schema({
     title : {
         type : String,
         required : true,
-        unique:true, 
-        sparse: true
     },
-    image: JSON,
+    image: {
+        type: JSON,
+        required : true,
+    },
     status:{
         type : String,
         required : true,
