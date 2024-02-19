@@ -90,7 +90,25 @@ exports.addNewService = async(req,res) =>{
 exports.getByID = async (req, res) => {
   try {
     const { artist_id } = { ...req.params };
-    const artist = await Artists.findById(artist_id).populate("profile").populate("featuredCategory").populate("categories").populate('products');
+    const artist = await Artists.findById(artist_id)
+      .populate("profile_id")
+      .populate("services")
+      .populate("products");
+      const allServices = await Services.find();
+
+
+      let artistPricing = [];
+    artist.pricing.map((item) => {
+      let artistService = allServices.find((el) => el._id.equals(item.service));
+      if (artistService) {
+        artistPricing.push({ ...item, service: artistService });
+      } else {
+        artistPricing.push(item);
+      }
+    });
+    if(artistPricing?.length > 0){
+      artist.pricing = artistPricing;
+    }   
     return res.status(200).json(artist);
   } catch (err) {
     res.status(404).json({
