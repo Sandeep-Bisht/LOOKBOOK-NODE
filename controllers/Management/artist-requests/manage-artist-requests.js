@@ -61,7 +61,7 @@ exports.verifyRequest = async (req, res) => {
                     if(payload.status == 'approved'){
                         let existingRequest = await ArtistRequest.findById(payload.request_id);
 
-                        const keysToCopy = ['user_id', 'userName', 'instagram', 'profile','categories','products', 'featuredCategory', 'coords','travel','experience','education','languages','gallery','description','certificates'];
+                        const keysToCopy = ['user_id', 'userName', 'instagram', 'profile','categories','products', 'featuredCategory', 'coords','travel','experience','education','languages','gallery','description','certificates','pricing'];
                     
                         const newObject = {};
 
@@ -103,20 +103,23 @@ exports.verifyRequest = async (req, res) => {
                             newObject['address'] = {city:null, state:null, country:null, postalCode:null};
                         }
 
-                        let artistServices = []
-                        if(Array.isArray(newObject['categories'])){
-                          let allServices = await Services.find({ 'artist_category': { $in: newObject['categories'] } });
-                          if(allServices){
-                            allServices.map((item) => artistServices.push({...item,...newObject['pricing'],'sessionTime':3}))
-                          }else{
-                            artistServices.push({'title':"Makeup",...newObject['pricing'],'sessionTime':3})
-                          }
-                        }
-                        else{
-                          artistServices.push({'title':"Makeup",...newObject['pricing'],'sessionTime':3})
-                        }
+                        // let artistServices = []
+
+                        // if(Array.isArray(newObject['categories'])){
+                        //   let allServices = await Services.find({ 'artist_category': { $in: newObject['categories'] } });
+                        //   if(allServices){
+                        //     allServices.map((item) => artistServices.push({...item,pricing:{...newObject['pricing']},'sessionTime':3}))
+                        //   }else{
+                        //     artistServices.push({'title':"Makeup",pricing:{...newObject['pricing']},'sessionTime':3})
+                        //   }
+                        // }
+                        // else{
+                        //   artistServices.push({'title':"Makeup",pricing:{...newObject['pricing']},'sessionTime':3})
+                        // }
+
+
                         
-                        newObject['services'] = artistServices;
+                        // newObject['services'] = artistServices;
 
                         const KYCDocs = new KYC({adharFront:existingRequest.adharFront, adharBack:existingRequest.adharBack, panCard:existingRequest.panCard});
                         const KYCID = await KYCDocs.save();

@@ -17,9 +17,6 @@ const ArtistSchema = new Schema({
         type:String,
         required:true
     },
-    image:{
-        type : JSON,
-    },
     profile: {
         required : true,
         type : Schema.Types.ObjectId,
@@ -27,7 +24,6 @@ const ArtistSchema = new Schema({
     },
     services:[
         {   
-            required:true,
             type : JSON, 
         }
     ],
@@ -55,7 +51,6 @@ const ArtistSchema = new Schema({
         required:true
     },
     travel:{
-        required:true,
         type:Boolean
     },
     experience:{
@@ -70,6 +65,10 @@ const ArtistSchema = new Schema({
         required:true
     }],
     description:String,
+    pricing:{
+        type:JSON,
+        required:true
+    },
     kyc:{
         required:true,
         type : Schema.Types.ObjectId,
