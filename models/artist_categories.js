@@ -2,21 +2,25 @@ const moongoose = require('mongoose');
 
 const Schema = moongoose.Schema;
 
-const slidesSchema = new Schema({   
+const ArtistCategorySchema = new Schema({   
     title : {
         type : String,
         required : true,
+        unique:true, 
+        sparse: true
     },
-    image: {
-        type: JSON,
+    icon: JSON,
+    image: JSON,
+    slug:{
+        type : String,
         required : true,
+        unique:true, 
     },
     status:{
         type : String,
         required : true,
         default:'active',
     },
-    order:Number,
     createdBy: {
         required : true,
         type: Schema.Types.ObjectId, 
@@ -26,6 +30,6 @@ const slidesSchema = new Schema({
 }, {timestamps : true})
 
 
-const model = moongoose.model("slides", slidesSchema)
+const model = moongoose.model("artist_category", ArtistCategorySchema)
 module.exports = model;
 

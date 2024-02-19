@@ -5,7 +5,6 @@ const userSchema = new Schema({
     email:{ type:String, unique:true, sparse: true },
     facebookID:{ type:String, unique:true, sparse: true },
     password: { type: String},
-    usertype:{type: String, require: true},
     status: { type: Boolean},
 },{timestamps: true})
 

@@ -16,6 +16,7 @@ const ProductsSchema = new Schema({
         required : true,
         unique:true, 
     },
+    order:Number ,
     status:{
         type : String,
         required : true,

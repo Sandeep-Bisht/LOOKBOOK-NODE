@@ -40,20 +40,12 @@ exports.create = async (req, res) => {
 exports.get_all_slides = async(req,res)=>{
     try{
       await slides.find().then((result)=>{
-        if(result && result.length>0)
-        {
-          res.status(200).json({
-            error: false,
-            message:"get all slides",
-            data:result
-          })
-        }
-        else{
-          res.status(400).json({
-            error:true,
-            message:"please provide correct information",
-          })
-        }
+        return res.status(200).json({
+          error: false,
+          message:"get all slides",
+          data:result
+        });
+
       })
     }
     catch(error){

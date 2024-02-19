@@ -2,6 +2,8 @@ const ArtistRequest = require('../../../models/artist_requests');
 const userRoles = require('../../../models/user_roles')
 const Role = require('../../../models/roles')
 const Artists = require('../../../models/artists')
+const Services = require('../../../models/services')
+const KYC = require('../../../models/kyc')
 const Joi = require('joi');
 const { default: axios } = require('axios');
 
@@ -59,7 +61,7 @@ exports.verifyRequest = async (req, res) => {
                     if(payload.status == 'approved'){
                         let existingRequest = await ArtistRequest.findById(payload.request_id);
 
-                        const keysToCopy = ['user_id', 'profile_id','services','products','coords','travel','experience','education','languages','gallery','description','pricing','adharFront','adharBack','panCard','certificates','featuredService'];
+                        const keysToCopy = ['user_id', 'userName', 'instagram', 'profile','categories','products', 'featuredCategory', 'coords','travel','experience','education','languages','gallery','description','certificates'];
                     
                         const newObject = {};
 
@@ -101,15 +103,24 @@ exports.verifyRequest = async (req, res) => {
                             newObject['address'] = {city:null, state:null, country:null, postalCode:null};
                         }
 
-                        let artistPricing = []
-                        if(Array.isArray(newObject['services'])){
-                          newObject['services'].map((item) => artistPricing.push({'service':item,...newObject['pricing'],'sessionTime':3}))
+                        let artistServices = []
+                        if(Array.isArray(newObject['categories'])){
+                          let allServices = await Services.find({ 'artist_category': { $in: newObject['categories'] } });
+                          if(allServices){
+                            allServices.map((item) => artistServices.push({...item,...newObject['pricing'],'sessionTime':3}))
+                          }else{
+                            artistServices.push({'title':"Makeup",...newObject['pricing'],'sessionTime':3})
+                          }
                         }
                         else{
-                          artistPricing.push({'service':newObject['featuredService'],...newObject['pricing'],'sessionTime':3})
+                          artistServices.push({'title':"Makeup",...newObject['pricing'],'sessionTime':3})
                         }
                         
-                        newObject['pricing'] = artistPricing;
+                        newObject['services'] = artistServices;
+
+                        const KYCDocs = new KYC({adharFront:existingRequest.adharFront, adharBack:existingRequest.adharBack, panCard:existingRequest.panCard});
+                        const KYCID = await KYCDocs.save();
+                        newObject['kyc'] = KYCID._id;
 
                         const newArtist = new Artists(newObject);
                         const result = await newArtist.save();
@@ -179,7 +190,7 @@ exports.artistRequestById = async (req,res) =>{
         if(role?.role === 'admin'){
 
         const request_id = req.params.request_id;
-        const request = await ArtistRequest.findById(request_id).populate('services').populate('products').populate('profile_id');
+        const request = await ArtistRequest.findById(request_id).populate('categories').populate('products').populate('profile').populate('featuredCategory');
         return res.status(200).json(request);
         }
         else{

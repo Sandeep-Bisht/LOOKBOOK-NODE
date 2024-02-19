@@ -1,12 +1,12 @@
 const Artists = require("../../models/artists");
-const Services = require("../../models/services");
+const ArtistCategories = require("../../models/artist_categories");
 const Profile = require("../../models/profile");
 const UserRole = require("../../models/user_roles");
 const Role = require("../../models/roles");
 
 exports.getAll = async (req, res) => {
   try {
-    const allArtists = await Artists.find({ status: "active" }).populate("profile_id").populate("featuredService").populate("services").populate('products');
+    const allArtists = await Artists.find({ status: "active" }).populate("profile").populate("featuredCategory").populate("categories").populate('products');
     return res.status(200).json(allArtists);
   } catch (err) {
     res.status(500).json({
@@ -19,7 +19,7 @@ exports.getAll = async (req, res) => {
 exports.getByID = async (req, res) => {
   try {
     const { artist_id } = { ...req.params };
-    const artist = await Artists.findById(artist_id).populate("profile_id").populate("featuredService").populate("services").populate('products');
+    const artist = await Artists.findById(artist_id).populate("profile").populate("featuredCategory").populate("categories").populate('products');
     return res.status(200).json(artist);
   } catch (err) {
     res.status(404).json({
@@ -28,6 +28,77 @@ exports.getByID = async (req, res) => {
     });
   }
 };
+
+exports.getArtistByCategorySlug = async (req, res) => {
+  try{
+    const {category_slug} = req.params;
+
+    if(!category_slug){
+      return res.status(400).json({
+        error: true,
+        message: "Bad Request.",
+      });
+    }
+
+    const artistCategory = await ArtistCategories.findOne({slug:category_slug});
+
+    if(!artistCategory){
+      return res.status(400).json({
+        error: true,
+        message: "Bad Request.",
+      });
+    }
+
+    const foundArtists = await Artists.find({status: 'active',categories:artistCategory._id}).populate("profile").populate("featuredCategory").populate("categories").populate('products');
+
+    return res.status(200).json(foundArtists);
+
+  } catch (error) {
+    return res.status(500).json({
+      error: true,
+      errorMessage:error.message,
+      message: "Internal Server Error.",
+    });
+  }
+}
+
+exports.getArtistBySlug = async (req,res) =>{
+  try{
+    const {category_slug, artist_slug} = req.params;
+
+    if(!category_slug || !artist_slug){
+      return res.status(400).json({
+        error: true,
+        message: "Bad Request.",
+      });
+    }
+
+    const artistCategory = await ArtistCategories.findOne({slug:category_slug});
+
+    if(!artistCategory){
+      return res.status(400).json({
+        error: true,
+        message: "Bad Request.",
+      });
+    }
+
+    const artist = await Artists.findOne({status: 'active',userName:artist_slug}).populate("profile").populate("featuredCategory").populate("categories").populate('products');
+
+    if(!artist){
+      return res.status(400).json({
+        error: true,
+        message: "Bad Request.",
+      });
+    }
+
+    return res.status(200).json(artist);
+  }
+  catch(error){
+
+  }
+}
+
+// Pending to update
 
 exports.get_artist_pricing = async (req, res) => {
   try {
@@ -122,99 +193,3 @@ exports.updatePricing = async (req, res) => {
     });
   }
 };
-
-exports.getArtistsByServiceSlug = async (req, res) => {
-  try{
-    const {service_slug} = req.params;
-
-    if(!service_slug){
-      return res.status(400).json({
-        error: true,
-        message: "Bad Request.",
-      });
-    }
-
-    const service = await Services.findOne({slug:service_slug});
-
-    if(!service){
-      return res.status(400).json({
-        error: true,
-        message: "Bad Request.",
-      });
-    }
-
-    const foundArtists = await Artists.find({status: 'active',services:service._id}).populate("profile_id").populate("featuredService").populate("services").populate('products');
-
-    return res.status(200).json(foundArtists);
-
-  } catch (error) {
-    return res.status(500).json({
-      error: true,
-      errorMessage:error.message,
-      message: "Internal Server Error.",
-    });
-  }
-}
-
-exports.getArtistByAlias = async (req,res) =>{
-  try{
-    const {service_slug, artist_alias} = req.params;
-
-    if(!service_slug || !artist_alias){
-      return res.status(400).json({
-        error: true,
-        message: "Bad Request.",
-      });
-    }
-
-    const service = await Services.findOne({slug:service_slug});
-
-    if(!service){
-      return res.status(400).json({
-        error: true,
-        message: "Bad Request.",
-      });
-    }
-
-    const user = await Profile.findOne({alias:artist_alias}).select('user_id')
-
-    if(!user){
-      return res.status(400).json({
-        error: true,
-        message: "Bad Request.",
-      });
-    }
-
-    const userRole = await UserRole.findOne({user_id:user.user_id})
-
-    if(!userRole || !userRole?.role_id){
-      return res.status(400).json({
-        error: true,
-        message: "Bad Request.",
-      });
-    }
-
-    const role = await Role.findById(userRole?.role_id);
-
-    if(!role || !role?.role === 'artist'){
-      return res.status(400).json({
-        error: true,
-        message: "Bad Request.",
-      });
-    }
-
-    const artist = await Artists.findOne({status: 'active',user_id:user.user_id}).populate("profile_id").populate("featuredService").populate("services").populate('products');
-
-    if(!artist){
-      return res.status(400).json({
-        error: true,
-        message: "Bad Request.",
-      });
-    }
-
-    return res.status(200).json(artist);
-  }
-  catch(error){
-
-  }
-}

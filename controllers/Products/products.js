@@ -53,20 +53,11 @@ module.exports={
   get_all_products:(req,res)=>{
     try{
       Products.find().then((result)=>{
-        if(result && result.length>0)
-        {
-          res.status(200).json({
-            error:false,
-            message:"get all services",
-            data:result
-          })
-        }
-        else{
-          res.status(400).json({
-            error:true,
-            message:"please provide correct information",
-          })
-        }
+        return res.status(200).json({
+          error:false,
+          message:"get all services",
+          data:result
+        })
       })
     }
     catch(error){

@@ -24,7 +24,7 @@ exports.googleSignup = async (req, res) => {
                     if(result){
                         try{
                             let roleId = await UserRoles.findOne({ user_id: result._id });
-                            let token = jwt.sign({userID:result._id,role:roleId.role_id},process.env.JWT_KEY || "Checkyourenvfile",{ expiresIn: "30d" })
+                            let token = jwt.sign({userID:result._id,role:roleId.role_id},process.env.JWT_KEY,{ expiresIn: "30d" })
                             return res.status(200).json({
                                               error: false,
                                               token: token,
@@ -41,9 +41,9 @@ exports.googleSignup = async (req, res) => {
                     else{
 
                         let newUserData = {
-                          user:{usertype:'google',email: userData.email},
+                          user:{email: userData.email},
                           role:'user',
-                          profile:{fullName:userData.name,email: userData.email,usertype:'google'}
+                          profile:{fullName:userData.name,email: userData.email}
                         }
 
                         createNewUser(newUserData).then((response)=>{

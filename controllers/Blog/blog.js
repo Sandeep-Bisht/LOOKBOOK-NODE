@@ -276,11 +276,11 @@ module.exports = {
     addView : async (req,res) =>{
       try{
         const {category_slug, slug} = req.params;
-        
+        return res.status(200).send("called");
 
       }
       catch(error){
-
+        return res.status(200).send("called error.");
       }
     }
   
