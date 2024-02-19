@@ -16,6 +16,18 @@ exports.getAll = async (req, res) => {
   }
 };
 
+exports.getUserArtistData = async (req,res) =>{
+  try {
+    const artist = await Artists.findOne({'user_id':req.user._id}).populate("profile").populate("featuredCategory").populate("categories").populate('products');
+    return res.status(200).json(artist);
+  } catch (err) {
+    res.status(500).json({
+      error: true,
+      message: "Something went wrong please try again later.",
+    });
+  }
+}
+
 exports.getByID = async (req, res) => {
   try {
     const { artist_id } = { ...req.params };
