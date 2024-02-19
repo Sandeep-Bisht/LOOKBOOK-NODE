@@ -1,5 +1,5 @@
 const Artists = require('../../models/artists')
-const Services = require("../../models/services");
+const Artist_Categories = require("../../models/artist_categories");
 const mongoose = require('mongoose')
 
 exports.getInitialData = async (_, res) => {
@@ -8,9 +8,9 @@ exports.getInitialData = async (_, res) => {
 
         const distinctCities = await Artists.distinct('address.city', { status: 'active', 'address': { $exists: true, $ne: null } });
         
-        const allServices = await Services.find({status:'Active'}).select('title icon slug');
+        const allCategories = await Artist_Categories.find({status:'active'});
         
-        return res.status(200).json({ cities: distinctCities, services:allServices });
+        return res.status(200).json({ cities: distinctCities, categories:allCategories });
 
       } catch (error) {
         return res.status(500).json({ error: 'Internal Server Error' });
