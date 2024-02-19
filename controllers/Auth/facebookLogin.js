@@ -18,8 +18,15 @@ exports.facebookSignup = (req, res) => {
                   .then(async(result)=>{
                     if(result){
                       try{
+                        if(!process.env.JWT_KEY){
+                          return res.status(400).json({
+                            error:true,
+                            message:"JWT Key Not Found."
+                          });
+                        }
+                        
                         let roleId = await UserRoles.findOne({ user_id: result._id });
-                        let token = jwt.sign({userID:result._id,role:roleId.role_id},process.env.JWT_KEY || "Checkyourenvfile",{ expiresIn: "30d" })
+                        let token = jwt.sign({userID:result._id,role:roleId.role_id},process.env.JWT_KEY,{ expiresIn: "30d" })
                         return res.status(200).json({
                                           error: false,
                                           token: token,
@@ -37,9 +44,9 @@ exports.facebookSignup = (req, res) => {
                     else{
     
                         let newUserData = {
-                          user:{usertype:'facebook',facebookID: userData.id},
+                          user:{facebookID: userData.id},
                           role:'user',
-                          profile:{fullName:userData.name,usertype:'facebook'}
+                          profile:{fullName:userData.name}
                         }
 
                         createNewUser(newUserData).then((response)=>{

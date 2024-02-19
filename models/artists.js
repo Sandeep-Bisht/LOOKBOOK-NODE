@@ -8,7 +8,19 @@ const ArtistSchema = new Schema({
         unique : true,
         ref : "users"       
     },
-    profile_id: {
+    userName:{
+        type:String,
+        required:true,
+        unique:true
+    },
+    instagram:{
+        type:String,
+        required:true
+    },
+    image:{
+        type : JSON,
+    },
+    profile: {
         required : true,
         type : Schema.Types.ObjectId,
         ref : "profile"       
@@ -16,14 +28,20 @@ const ArtistSchema = new Schema({
     services:[
         {   
             required:true,
-            type : Schema.Types.ObjectId,
-            ref : "services" 
+            type : JSON, 
         }
     ],
-    featuredService:{
+    categories:[
+        {
+            required:true,
+            type : Schema.Types.ObjectId,
+            ref : "artist_category" 
+        }
+    ],
+    featuredCategory:{
+        required:true,
         type : Schema.Types.ObjectId,
-        ref : "services" ,
-        required:true
+        ref : "artist_category" 
     },
     products:[
         {
@@ -36,45 +54,42 @@ const ArtistSchema = new Schema({
         type:JSON,
         required:true
     },
-    travel:Boolean,
-    experience:String,
-    education:String,
-    languages:JSON,
+    travel:{
+        required:true,
+        type:Boolean
+    },
+    experience:{
+        type:Number
+    },
+    education:{
+        type:String
+    },
+    languages:[{type:JSON}],
     gallery:[{
         type:JSON,
         required:true
     }],
     description:String,
-    pricing:{
-        type:JSON,
-        required:true
-    },
-    adharFront:{
-        type:JSON,
-        required:true
-    },
-    adharBack:{
-        type:JSON,
-        required:true
-    },
-    panCard:{
-        type:JSON,
-        required:true
+    kyc:{
+        required:true,
+        type : Schema.Types.ObjectId,
+        ref : "kyc" 
     },
     certificates:[{type:JSON}],
     address : { type : JSON },
+    featured_artist: {
+        type: Boolean,
+        default: false, // or true, depending on your default value
+    },
+    emerging_artist: {
+        type: Boolean,
+        default: false, // or true, depending on your default value
+    },
+    order:Number ,
     status: {
         type: String,
         default: "active" // Set the default value to "active"
     },
-    featuredTag: {
-        type: Boolean,
-        default: false, // or true, depending on your default value
-    },
-    emergingTag: {
-        type: Boolean,
-        default: false, // or true, depending on your default value
-    }
 
 }, { timestamps : true})
 

@@ -37,13 +37,13 @@ exports.signup = async (req, res) => {
             if(emailRegex.test(username)){
         
                   const mailOptions = {
-                    from: "nick976055@gmail.com",
+                    from: process.env.ADMIN_EMAIL,
                     to: username,
                     subject: "OTP for Login",
                     html: `<p>Your OTP is ${otp}. It is valid for 5 minutes.</p>`,
                   };
         
-                   transporter.sendMail(mailOptions,(err,info)=>{
+                   await transporter.sendMail(mailOptions,(err,info)=>{
                     if (err) {
                         return res.status(500).json({
                             err,
@@ -125,7 +125,7 @@ exports.signupVerify = async(req,res) => {
 
                     try{
                         let roleId = await UserRoles.findOne({ user_id: result._id });
-                        let token = jwt.sign({userID:result._id,role:roleId.role_id},process.env.JWT_KEY || "Checkyourenvfile",{ expiresIn: "30d" })
+                        let token = jwt.sign({userID:result._id,role:roleId.role_id},process.env.JWT_KEY,{ expiresIn: "30d" })
                         return res.status(200).json({
                                           error: false,
                                           token: token,
@@ -144,11 +144,9 @@ exports.signupVerify = async(req,res) => {
                     let userData = {};
 
                     if(emailRegex.test(username)){
-                        userData.usertype = 'email';
                         userData.email = username;
                     }
                     else{
-                        userData.usertype = 'mobile';
                         userData.mobile = username;
                     }
                     

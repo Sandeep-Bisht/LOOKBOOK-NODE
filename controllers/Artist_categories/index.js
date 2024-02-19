@@ -1,4 +1,4 @@
-const Services = require("../../models/services");
+const ArtistCategories = require("../../models/artist_categories");
 const {uploadFilesToImagekit} = require('../../config/upload');
 const slugify = require('slugify');
 
@@ -7,7 +7,6 @@ module.exports={
   create: async (req, res) => {
     try {
       let data = { ...req.body,createdBy:req.user._id };
-      data['artist_category'] = data.artist_category.split(',');
       if (req.files) {
         let fileUploadResponse = await uploadFilesToImagekit(req);
         if(fileUploadResponse && fileUploadResponse.length > 0){
@@ -23,11 +22,11 @@ module.exports={
         strict: true    // Remove special characters
       });
   
-      Services.create(data).then((result)=>{
+      ArtistCategories.create(data).then((result)=>{
         if (result) {
           res.status(200).json({
             status: 200,
-            message: "Service created successfully",
+            message: "Artist Category created successfully",
             data: result
           });
         } else {
@@ -48,12 +47,12 @@ module.exports={
     }
   },  
 
-  get_all_services:async(req,res)=>{
+  get_all_artist_categories:async(req,res)=>{
     try{
-      await Services.find().populate('artist_category').then((result)=>{
+      await ArtistCategories.find().then((result)=>{
         return res.status(200).json({
           error: false,
-          message:"get all services",
+          message:"get all Artist Categories",
           data:result
         })
       })
@@ -67,10 +66,10 @@ module.exports={
 
   },
 
-  get_service_by_id: async (req, res) => {
+  get_artist_category_by_id: async (req, res) => {
     const { _id } = req.params;
     try {  
-      await Services.findById(_id).then((result)=>
+      await ArtistCategories.findById(_id).then((result)=>
       {
         if (result !== null) {
           res.status(200).json({
@@ -93,15 +92,13 @@ module.exports={
     }
   },
   
-  
-  update_service: async (req, res) => {
+  update_artist_category: async (req, res) => {
     let data = {};
-
-    const { title, _id, artist_category } = req.body;
+  
+    const { title, _id } = req.body;
     data = {
       _id: _id,
       title: title,
-      artist_category:artist_category.split(','),
     };
 
     data.slug = slugify(data.title, {
@@ -127,16 +124,16 @@ module.exports={
     }
   
     try {
-      const result = await Services.findByIdAndUpdate(_id, data);
+      const result = await ArtistCategories.findByIdAndUpdate(_id, data);
       if (result) {
         return res.status(200).json({
           error: false,
-          message: "Services updated successfully",
+          message: "Artist Category updated successfully",
         });
       } else {
         return res.status(400).json({
           error: true,
-          message: "Error updating Services",
+          message: "Error updating Artist Category",
         });
       }
     } catch (error) {

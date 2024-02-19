@@ -14,7 +14,6 @@ const ProfileSchema = new Schema({
         unique : true,
         sparse: true
     },
-    instaId:String,
     mobile: {
         unique : true,
         type : String,
@@ -26,23 +25,14 @@ const ProfileSchema = new Schema({
     dob: {
         type: String,
     },
-    alias: {
-        unique : true,
-        type : String,
-        sparse: true
-    },
     image:{
         type : JSON,
-    },
-    usertype:{
-        type : String,
-        required:true,
     },
     address : [{ type : JSON }],
     status:{
         type : String,
         required : true,
-        default:'Active',
+        default:'active',
     },
 
 }, { timestamps : true})

@@ -1,10 +1,44 @@
 const { uploadFilesToImagekit } = require('../../config/upload');
 const ArtistRequest = require('../../models/artist_requests');
-const profiles = require('../../models/profile')
+const profiles = require('../../models/profile');
+const UserRoles = require('../../models/user_roles')
+const Role = require('../../models/roles')
 
 exports.getArtistRequests = async (req, res) => {
     try{
-        const existingRequest = await ArtistRequest.find({'user_id':req.user._id}).populate("profile_id");
+        const userRoleId = await UserRoles.findOne({'user_id':req.user._id});
+
+        if(!userRoleId){
+          return res.status(400).json({
+            error:true,
+            message:"User role not found."
+        })
+        }
+
+        const userRole = await Role.findById(userRoleId?.role_id);
+        if(!userRole || !userRole?.role){
+          return res.status(400).json({
+            error:true,
+            message:"User role not found."  
+        })
+        }
+
+        if(userRole?.role === 'artist'){
+          return res.status(400).json({
+            error:true,
+            artist:true,
+            message:"Your request has been approved. You are artist now."
+          })
+        }
+
+        if(!userRole?.role === 'user'){
+          return res.status(400).json({
+            error:true,
+            message:"Unauthorized role."
+          })
+        }
+
+        const existingRequest = await ArtistRequest.find({'user_id':req.user._id}).populate("profile");
         return res.send(existingRequest);
         
     }
@@ -18,12 +52,46 @@ exports.getArtistRequests = async (req, res) => {
 
 exports.updateArtistRequest = async (req, res) => {
     try {
+      const userRoleId = await UserRoles.findOne({'user_id':req.user._id});
+
+        if(!userRoleId){
+          return res.status(400).json({
+            error:true,
+            message:"User role not found."
+        })
+        }
+
+        const userRole = await Role.findById(userRoleId?.role_id);
+        if(!userRole){
+          return res.status(400).json({
+            error:true,
+            message:"User role not found."
+        })
+        }
+
+        if(userRole === 'artist'){
+          return res.status(400).json({
+            error:true,
+            artist:true,
+            message:"Your request has been approved. You are artist now."
+          })
+        }
+
+        if(!userRole === 'user'){
+          return res.status(400).json({
+            error:true,
+            message:"Unauthorized role."
+          })
+        }
+
       var updateFields = {...req.body};
       var requestStatus = req.body?.status;
       delete updateFields.status;
+      delete updateFields.mobile;
+      delete updateFields.email;
 
       // Find the document by user_id and status
-      let existingRequest = await ArtistRequest.findOne({ 'user_id': req.user._id, 'status': 'progress' });
+      let existingRequest = await ArtistRequest.findOne({ 'user_id': req.user._id, 'status': 'progress' }).populate('profile');
 
 
       // updating request status for verification
@@ -36,19 +104,28 @@ exports.updateArtistRequest = async (req, res) => {
           if(existingRequest){
             let existingRequestData = {...existingRequest._doc};
             
-            if(existingRequestData.user_id.equals(req.user._id) && existingRequestData.profile_id && existingRequestData.services.length > 0 && existingRequestData.products.length > 0 && existingRequestData.coords?.lat && existingRequestData.coords?.lng && existingRequestData.gallery.length > 2 && existingRequestData.description && existingRequestData.pricing && existingRequestData.adharFront && existingRequestData.adharBack && existingRequestData.panCard && existingRequestData.featuredService){
-              let profile = await profiles.findOne({'user_id': req.user._id});
-              let profileData = {...profile._doc}
-
-              if(profileData.fullName && profileData.alias && profileData.email && profileData.instaId && profileData.mobile && profileData.gender && profileData.dob && profileData.status == 'Active'){
+            if(existingRequestData.user_id.equals(req.user._id) && 
+              existingRequestData.profile &&
+              existingRequestData.userName && 
+              existingRequestData.profile?.fullName && 
+              existingRequestData.profile?.gender && 
+              existingRequestData.profile?.dob && 
+              existingRequestData.profile?.email && 
+              existingRequestData.profile?.mobile && 
+              existingRequestData.instagram && 
+              existingRequestData.featuredCategory && 
+              existingRequestData.categories.length > 0 && 
+              existingRequestData.products.length > 0 && 
+              existingRequestData.coords?.lat && existingRequestData.coords?.lng && 
+              existingRequestData.gallery.length > 2 && 
+              existingRequestData.description && 
+              existingRequestData.pricing && 
+              existingRequestData.adharFront && 
+              existingRequestData.adharBack && 
+              existingRequestData.panCard &&
+              existingRequestData.currentStep > 14
+              ){
                 updateFields['status'] = 'pending';
-              }
-              else{
-                return res.status(400).json({
-                  status: 400,
-                  message: "Please provide correct information."
-                });
-              }
             }
             else{
               return res.status(400).json({
@@ -120,7 +197,7 @@ exports.updateArtistRequest = async (req, res) => {
       
         let profile = await profiles.findOne({'user_id': req.user._id});
         updateFields['user_id'] = req.user._id;
-        updateFields['profile_id'] = profile._id;
+        updateFields['profile'] = profile._id;
   
         ArtistRequest.create(updateFields)
           .then((result) => {
@@ -179,7 +256,7 @@ exports.updateArtistRequest = async (req, res) => {
   
 exports.getAllArtistRequest = async (req,res) =>{
   try{
-    ArtistRequest.find().populate('services').populate('products').populate('profile_id').then((result)=>{
+    ArtistRequest.find().populate('categories').populate('featuredCategory').populate('products').populate('profile').then((result)=>{
       if(result!=null)
       {
         res.status(200).json({

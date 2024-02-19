@@ -2,13 +2,18 @@ const moongoose = require('mongoose');
 
 const Schema = moongoose.Schema;
 
-const ServicesSchema = new Schema({   
+const ServiceSchema = new Schema({   
     title : {
         type : String,
         required : true,
         unique:true, 
         sparse: true
     },
+    artist_category: [{
+        required : true,
+        type : Schema.Types.ObjectId,
+        ref:"artist_category"
+    }],
     icon: JSON,
     image: JSON,
     slug:{
@@ -30,6 +35,6 @@ const ServicesSchema = new Schema({
 }, {timestamps : true})
 
 
-const model = moongoose.model("services", ServicesSchema)
+const model = moongoose.model("services", ServiceSchema)
 module.exports = model;
 

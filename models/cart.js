@@ -14,8 +14,7 @@ const CartSchema = new Schema({
     },
     service: {
         required : true,
-        type : Schema.Types.ObjectId,
-        ref : "services"       
+        type : JSON,     
     },
     date: {
         required : true,
@@ -27,7 +26,7 @@ const CartSchema = new Schema({
     },
     time: {
         required : true,
-        type : String,     
+        type : JSON,     
     },
     status: {
         type: String,

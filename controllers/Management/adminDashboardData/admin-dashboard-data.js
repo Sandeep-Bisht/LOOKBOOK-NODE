@@ -8,7 +8,7 @@ exports.getAdminDashboardInitialData = async (req, res) => {
   try {
 
        const artistRequestCount = await ArtistRequest.countDocuments({ status: 'pending' });   
-       const pendingArtist = await ArtistRequest.find().populate('services').populate("profile_id");
+       const pendingArtist = await ArtistRequest.find().populate('categories').populate("profile");
        const artistRejectCount = await ArtistRequest.countDocuments({ status: 'reject' });
        const servicesCount = await AllServices.countDocuments();
        const usersCount = await AllUsers.countDocuments();
@@ -16,8 +16,8 @@ exports.getAdminDashboardInitialData = async (req, res) => {
        const artistsCount = await Artists.countDocuments();
        const featuredArtistsCount = await Artists.countDocuments({ featuredTag: true });
        const emergingArtistsCount = await Artists.countDocuments({ emergingTag: true });
-       const featuredArtists = await Artists.find({ featuredTag: true }).populate("services").populate("profile_id");
-       const emergingArtists = await Artists.find({ emergingTag: true }).populate("services").populate("profile_id");
+       const featuredArtists = await Artists.find({ featuredTag: true }).populate("profile");
+       const emergingArtists = await Artists.find({ emergingTag: true }).populate("profile");
   
        const allArtists = await Artists.find({status : 'active'});
         

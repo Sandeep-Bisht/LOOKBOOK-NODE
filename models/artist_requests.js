@@ -7,15 +7,23 @@ const ArtistRequestSchema = new Schema({
         type : Schema.Types.ObjectId,
         ref : "users"       
     },
-    profile_id: {
+    userName:{ 
+        type:String, 
+        unique:true, 
+        sparse: true 
+    },
+    instagram:{
+        type:String,
+    },
+    profile: {
         required : true,
         type : Schema.Types.ObjectId,
         ref : "profile"       
     },
-    services:[
+    categories:[
         {
             type : Schema.Types.ObjectId,
-            ref : "services" 
+            ref : "artist_category" 
         }
     ],
     products:[
@@ -24,9 +32,9 @@ const ArtistRequestSchema = new Schema({
             ref : "products" 
         }
     ],
-    featuredService:{
+    featuredCategory:{
         type : Schema.Types.ObjectId,
-        ref : "services" 
+        ref : "artist_category" 
     },
     coords:JSON,
     travel:Boolean,

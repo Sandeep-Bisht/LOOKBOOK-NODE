@@ -1,6 +1,7 @@
 const router = require("express").Router()
 const AuthRoutes = require('../controllers/Auth/routes')
 const UsersRoutes = require('../controllers/Users/routes');
+const ArtistCategoriesRoutes = require('../controllers/Artist_categories/routes')
 const ServicesRoutes = require('../controllers/Services/routes');
 const ProductsRoutes = require('../controllers/Products/routes')
 const BlogsRoutes = require('../controllers/Blog/routes')
@@ -16,6 +17,7 @@ const CartRoutes = require('../controllers/Cart/routes')
 
 router.use('/auth',AuthRoutes);
 router.use('/users',UsersRoutes);
+router.use('/artist-categories',ArtistCategoriesRoutes);
 router.use('/service',ServicesRoutes);
 router.use('/product',ProductsRoutes)
 router.use('/blog',BlogsRoutes);
