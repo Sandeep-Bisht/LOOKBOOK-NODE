@@ -1,8 +1,6 @@
 const Artists = require("../../models/artists");
 const ArtistCategories = require("../../models/artist_categories");
-const Profile = require("../../models/profile");
-const UserRole = require("../../models/user_roles");
-const Role = require("../../models/roles");
+const { uploadFilesToImagekit } = require("../../config/upload");
 
 exports.getAll = async (req, res) => {
   try {
@@ -26,7 +24,68 @@ exports.getUserArtistData = async (req,res) =>{
       message: "Something went wrong please try again later.",
     });
   }
-}
+};
+
+exports.addNewService = async(req,res) =>{
+  try {
+    var data = {...req.body};
+    const artist = await Artists.findOne({'user_id':req.user._id});
+    
+    if(!artist){
+      return res.status(401).json({
+        error: true,
+        message: "Artist not found with this id.",
+      });
+    }
+
+    if (req.files) {
+      let fileUploadResponse = await uploadFilesToImagekit(req);
+      if(fileUploadResponse && fileUploadResponse.length > 0){
+        let featuredImage = fileUploadResponse.find((item) => item.fieldName == 'icon');
+        if(featuredImage) data = {...data,icon:featuredImage.response};
+      }
+    }
+
+    
+    if(!data.title || !data.icon){
+      return res.status(400).json({
+        error: true,
+        message: "Bad request.",
+      });
+    }
+
+    const previousServices = artist.services ? artist.services : [];
+
+    const gstPer = 18;
+    const platformFee = 5;
+    const pricewithPlatformFee = ((artist.pricing?.price * platformFee) / 100) + artist.pricing?.price;
+    const totalPriceWithGST = ((pricewithPlatformFee * gstPer) / 100) + pricewithPlatformFee;
+
+    data = {...data, pricing:{
+      amount:artist.pricing?.price,
+      gstAmount:(pricewithPlatformFee * gstPer) / 100,
+      platformFee:(artist.pricing?.price * platformFee) / 100,
+      totalPrice:totalPriceWithGST,
+      sessionTime:3
+    }}
+
+    previousServices.push(data);
+
+    const result = await Artists.findOneAndUpdate(
+      { 'user_id': req.user._id },
+      { $set: {services:previousServices} },
+      { new: true }
+    );
+
+    return res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({
+      error: true,
+      errorMessage:err.message,
+      message: "Something went wrong please try again later.",
+    });
+  }
+};
 
 exports.getByID = async (req, res) => {
   try {
