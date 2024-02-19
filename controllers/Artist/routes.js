@@ -1,10 +1,13 @@
 const router = require("express").Router()
+const { upload } = require('../../config/upload')
 
 const passport = require("passport")
-const { getAll, getByID, get_artist_pricing, updatePricing, getArtistByCategorySlug, getArtistBySlug, getUserArtistData } = require('./index')
+const { getAll, getByID, get_artist_pricing, updatePricing, getArtistByCategorySlug, getArtistBySlug, getUserArtistData, addNewService } = require('./index')
 
 router.get('/get-all-artists',getAll)
 router.get('/get-artist-by-id/:artist_id',getByID)
+
+router.post('/add-service',passport.authenticate('jwt', {session:false}),upload.any('files'), addNewService)
 
 // Pending
 router.get('/get-artists-by-category-slug/:category_slug',getArtistByCategorySlug)
