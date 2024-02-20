@@ -96,7 +96,6 @@ module.exports={
   
   update_service: async (req, res) => {
     let data = {};
-
     const { title, _id, artist_category } = req.body;
     data = {
       _id: _id,

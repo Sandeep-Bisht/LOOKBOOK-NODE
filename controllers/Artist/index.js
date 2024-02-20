@@ -62,7 +62,7 @@ exports.addNewService = async(req,res) =>{
     const totalPriceWithGST = ((pricewithPlatformFee * gstPer) / 100) + pricewithPlatformFee;
 
     data = {...data, pricing:{
-      amount:artist.pricing?.price,
+      price:artist.pricing?.price,
       gstAmount:(pricewithPlatformFee * gstPer) / 100,
       platformFee:(artist.pricing?.price * platformFee) / 100,
       totalPrice:totalPriceWithGST,
