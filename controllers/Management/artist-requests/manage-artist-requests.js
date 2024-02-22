@@ -103,6 +103,16 @@ exports.verifyRequest = async (req, res) => {
                             newObject['address'] = {city:null, state:null, country:null, postalCode:null};
                         }
 
+                        var allServices = await Services.find({ 'artist_category': { $in: newObject['categories'] } }).select('title icon');
+
+                        if(allServices && Array.isArray(allServices) && allServices.length > 0) {
+                            const promise = allServices.map((item) => {
+                                return { ...item, pricing: { ...(existingRequest?.pricing), sessionTime: 3 } };
+                            });
+                            newObject['services'] = Promise.all(promise);
+                        }
+                        
+                        // return;
                         // let artistServices = []
 
                         // if(Array.isArray(newObject['categories'])){
