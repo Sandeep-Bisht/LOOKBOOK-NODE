@@ -107,33 +107,16 @@ exports.verifyRequest = async (req, res) => {
 
                         if(allServices && Array.isArray(allServices) && allServices.length > 0) {
                             const promise = allServices.map((item) => {
-                                return { ...item, pricing: { ...(existingRequest?.pricing), sessionTime: 3 } };
+                                return { ...item._doc, pricing: { ...(existingRequest?.pricing), sessionTime: 3 } };
                             });
-                            newObject['services'] = Promise.all(promise);
+                            newObject['services'] = await Promise.all(promise);
                         }
                         
-                        // return;
-                        // let artistServices = []
-
-                        // if(Array.isArray(newObject['categories'])){
-                        //   let allServices = await Services.find({ 'artist_category': { $in: newObject['categories'] } });
-                        //   if(allServices){
-                        //     allServices.map((item) => artistServices.push({...item,pricing:{...newObject['pricing']},'sessionTime':3}))
-                        //   }else{
-                        //     artistServices.push({'title':"Makeup",pricing:{...newObject['pricing']},'sessionTime':3})
-                        //   }
-                        // }
-                        // else{
-                        //   artistServices.push({'title':"Makeup",pricing:{...newObject['pricing']},'sessionTime':3})
-                        // }
-
-
-                        
-                        // newObject['services'] = artistServices;
 
                         const KYCDocs = new KYC({adharFront:existingRequest.adharFront, adharBack:existingRequest.adharBack, panCard:existingRequest.panCard});
                         const KYCID = await KYCDocs.save();
                         newObject['kyc'] = KYCID._id;
+
 
                         const newArtist = new Artists(newObject);
                         const result = await newArtist.save();
