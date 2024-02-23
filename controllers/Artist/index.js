@@ -37,7 +37,6 @@ exports.addNewService = async(req,res) =>{
         message: "Artist not found with this id.",
       });
     }
-
     if (req.files) {
       let fileUploadResponse = await uploadFilesToImagekit(req);
       if(fileUploadResponse && fileUploadResponse.length > 0){
@@ -55,20 +54,21 @@ exports.addNewService = async(req,res) =>{
     }
 
     const previousServices = artist.services ? artist.services : [];
-
     const gstPer = 18;
     const platformFee = 5;
-    const pricewithPlatformFee = ((artist.pricing?.price * platformFee) / 100) + artist.pricing?.price;
+    const pricewithPlatformFee = ((JSON.parse(data.price) * platformFee) / 100) + JSON.parse(data.price);
     const totalPriceWithGST = ((pricewithPlatformFee * gstPer) / 100) + pricewithPlatformFee;
 
     data = {...data, pricing:{
-      price:artist.pricing?.price,
+      price:data.price,
       gstAmount:(pricewithPlatformFee * gstPer) / 100,
-      platformFee:(artist.pricing?.price * platformFee) / 100,
+      platformFee:(data.price * platformFee) / 100,
       totalPrice:totalPriceWithGST,
-      sessionTime:3
+      sessionTime:data.sessionTime
     }}
 
+    delete data.sessionTime;
+    delete data.price;
     previousServices.push(data);
 
     const result = await Artists.findOneAndUpdate(
@@ -90,7 +90,25 @@ exports.addNewService = async(req,res) =>{
 exports.getByID = async (req, res) => {
   try {
     const { artist_id } = { ...req.params };
-    const artist = await Artists.findById(artist_id).populate("profile").populate("featuredCategory").populate("categories").populate('products');
+    const artist = await Artists.findById(artist_id)
+      .populate("profile_id")
+      .populate("services")
+      .populate("products");
+      const allServices = await Services.find();
+
+
+      let artistPricing = [];
+    artist.pricing.map((item) => {
+      let artistService = allServices.find((el) => el._id.equals(item.service));
+      if (artistService) {
+        artistPricing.push({ ...item, service: artistService });
+      } else {
+        artistPricing.push(item);
+      }
+    });
+    if(artistPricing?.length > 0){
+      artist.pricing = artistPricing;
+    }   
     return res.status(200).json(artist);
   } catch (err) {
     res.status(404).json({
@@ -264,3 +282,22 @@ exports.updatePricing = async (req, res) => {
     });
   }
 };
+
+exports.deleteArtistService = async (req, res) => {
+  try {
+    let {id} = req.body;
+    const artist = await Artists.findOne({'user_id':req.user._id})
+    let allServices = artist?.services
+    artist.services = allServices.filter(service => service._id !== id);  
+    await artist.save();
+    res.status(200).json(artist);    
+  } catch (error) {
+    console.error("Error deleting service:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+ 
+}
+
+exports.updateArtistService = async (req, res) => {
+  console.log("inside update artist service", req.body)
+}
