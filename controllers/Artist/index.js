@@ -37,7 +37,6 @@ exports.addNewService = async(req,res) =>{
         message: "Artist not found with this id.",
       });
     }
-
     if (req.files) {
       let fileUploadResponse = await uploadFilesToImagekit(req);
       if(fileUploadResponse && fileUploadResponse.length > 0){
@@ -60,7 +59,7 @@ exports.addNewService = async(req,res) =>{
     const pricewithPlatformFee = ((JSON.parse(data.price) * platformFee) / 100) + JSON.parse(data.price);
     const totalPriceWithGST = ((pricewithPlatformFee * gstPer) / 100) + pricewithPlatformFee;
 
-    data = {_id:data._id, title:data.title, pricing:{
+    data = {...data, pricing:{
       price:data.price,
       gstAmount:(pricewithPlatformFee * gstPer) / 100,
       platformFee:(data.price * platformFee) / 100,
@@ -68,6 +67,8 @@ exports.addNewService = async(req,res) =>{
       sessionTime:data.sessionTime
     }}
 
+    delete data.sessionTime;
+    delete data.price;
     previousServices.push(data);
 
     const result = await Artists.findOneAndUpdate(
@@ -295,4 +296,8 @@ exports.deleteArtistService = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
  
+}
+
+exports.updateArtistService = async (req, res) => {
+  console.log("inside update artist service", req.body)
 }
