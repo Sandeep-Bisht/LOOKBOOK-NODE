@@ -14,6 +14,8 @@ const CommentRoutes = require('../controllers/Comments/routes')
 const QueryRoutes = require('../controllers/Queries/routes')
 const slidesRoutes = require('../controllers/slides/routes')
 const CartRoutes = require('../controllers/Cart/routes')
+const CheckoutRoutes = require('../controllers/Checkout/routes')
+const BookingRoutes = require('../controllers/Bookings/routes')
 
 router.use('/auth',AuthRoutes);
 router.use('/users',UsersRoutes);
@@ -30,5 +32,7 @@ router.use('/comment',CommentRoutes);
 router.use('/queries',QueryRoutes);
 router.use('/slides',slidesRoutes);
 router.use('/cart',CartRoutes);
+router.use('/checkout',CheckoutRoutes);
+router.use('/bookings',BookingRoutes);
 
 module.exports = router

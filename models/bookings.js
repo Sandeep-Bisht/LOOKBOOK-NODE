@@ -1,7 +1,7 @@
 const moongoose = require('mongoose')
 const Schema = moongoose.Schema
 
-const CartSchema = new Schema({
+const BookingSchema = new Schema({
     user_id: {
         required : true,
         type : Schema.Types.ObjectId,
@@ -30,10 +30,10 @@ const CartSchema = new Schema({
     }],
     status: {
         type: String,
-        default: "open" // Set the default value to "active"
+        default: "pending" // Set the default value to "active"
     }
 
 }, { timestamps : true})
 
-const model = moongoose.model("cart", CartSchema)
+const model = moongoose.model("bookings", BookingSchema)
 module.exports = model;
