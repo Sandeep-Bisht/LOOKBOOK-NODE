@@ -147,7 +147,7 @@ exports.verifyPayment = async (req, res) => {
 
       const cartData = await Cart.updateMany({_id:{ $in: payment.cart }},{ $set: { status:'closed' } },{ new: true });
       
-      return res.status(200).json(cartData);
+      return res.status(200).json(payment);
 
     } else {
       return res.status(400).json({ message: "Invalid signature sent!" });
