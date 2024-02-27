@@ -39,7 +39,7 @@ exports.uploadFileToImagekit = async (req) =>{
                     fileName: `${Date.now()}--${originalFileName}`, // Provide a unique filename
                 });
 
-                return response;
+                return {...response,mimetype:req.file.mimetype};
               } else {
                 // It's neither an image nor a video
                 console.log('File type not allowed to upload on imagekit')
@@ -72,10 +72,11 @@ exports.uploadFilesToImagekit = async (req) => {
 
                     if (allowedExtensions.includes(fileExtension)) {
                         try {
-                            const response = await imagekitClient.upload({
+                            var response = await imagekitClient.upload({
                                 file: fileBuffer,
                                 fileName: `${Date.now()}--${originalFileName}`, // Provide a unique filename
                             });
+                            response = {...response,mimetype:file.mimetype}
                             responses.push({ fieldName: file.fieldname, response });
                         } catch (err) {
                             console.log(`Error uploading ${originalFileName} to ImageKit: ${err}`);
