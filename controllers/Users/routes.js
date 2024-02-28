@@ -5,9 +5,13 @@ const UserRoles = require('../../models/user_roles')
 const { setProfile, getProfile } = require('./profile')
 const { getArtistRequests, updateArtistRequest, getAllArtistRequest, addCertificates } = require('./artistsRequest')
 const { upload, uploadFilesToImagekit } = require("../../config/upload")
+const { getAddresses,addAddress } = require("./addresses")
 
 router.post('/setProfile',passport.authenticate('jwt',{session:false}),upload.any('files'),setProfile)
 router.get('/getProfile',passport.authenticate('jwt',{session:false}),getProfile)
+router.get('/addresses',passport.authenticate('jwt',{session:false}),getAddresses)
+router.post('/add-address',passport.authenticate('jwt',{session:false}),addAddress)
+
 
 router.get('/getArtistRequests',passport.authenticate('jwt',{session:false}),getArtistRequests)
 router.post('/updateArtistRequest',passport.authenticate('jwt',{session:false}),upload.any('files'),updateArtistRequest)
