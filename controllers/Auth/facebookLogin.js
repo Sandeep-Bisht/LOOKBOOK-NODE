@@ -3,6 +3,7 @@ let users = require('../../models/Users');
 const axios = require('axios');
 const createNewUser = require('../../services/createNewUser')
 const UserRoles = require('../../models/user_roles')
+const Profile = require('../../models/profile')
 
 exports.facebookSignup = (req, res) => {
     try{
@@ -26,7 +27,8 @@ exports.facebookSignup = (req, res) => {
                         }
                         
                         let roleId = await UserRoles.findOne({ user_id: result._id });
-                        let token = jwt.sign({userID:result._id,role:roleId.role_id},process.env.JWT_KEY,{ expiresIn: "30d" })
+                        let UserProfile = await Profile.findOne({ user_id: result._id });
+                        let token = jwt.sign({userID:result._id,role:roleId.role_id,fullName:UserProfile.fullName},process.env.JWT_KEY,{ expiresIn: "30d" })
                         return res.status(200).json({
                                           error: false,
                                           token: token,
