@@ -6,6 +6,7 @@ const sendOTP = require('../../config/sendOTP');
 const createNewUser = require('../../services/createNewUser')
 const UserRoles = require('../../models/user_roles')
 const transporter = require('../../config/nodeMailer');
+const Profile =  require('../../models/profile');
 
 exports.signup = async (req, res) => {
     try{
@@ -125,7 +126,8 @@ exports.signupVerify = async(req,res) => {
 
                     try{
                         let roleId = await UserRoles.findOne({ user_id: result._id });
-                        let token = jwt.sign({userID:result._id,role:roleId.role_id},process.env.JWT_KEY,{ expiresIn: "30d" })
+                        let userProfile = await Profile.findOne({ user_id: result._id });
+                        let token = jwt.sign({userID:result._id,role:roleId.role_id,fullName:userProfile.fullName},process.env.JWT_KEY,{ expiresIn: "30d" })
                         return res.status(200).json({
                                           error: false,
                                           token: token,
