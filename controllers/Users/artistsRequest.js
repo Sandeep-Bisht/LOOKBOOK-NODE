@@ -89,7 +89,6 @@ exports.updateArtistRequest = async (req, res) => {
       delete updateFields.status;
       delete updateFields.mobile;
       delete updateFields.email;
-      delete updateFields.certificates;
 
       // Find the document by user_id and status
       let existingRequest = await ArtistRequest.findOne({ 'user_id': req.user._id, 'status': 'progress' }).populate('profile');
@@ -123,7 +122,6 @@ exports.updateArtistRequest = async (req, res) => {
               existingRequestData.pricing && 
               existingRequestData.adharFront && 
               existingRequestData.adharBack && 
-              existingRequestData.panCard &&
               existingRequestData.currentStep > 14
               ){
                 updateFields['status'] = 'pending';
@@ -237,95 +235,6 @@ exports.updateArtistRequest = async (req, res) => {
       });
     }
 };
-
-exports.addCertificates = async (req, res) => {
-  try {
-    const userRoleId = await UserRoles.findOne({'user_id':req.user._id});
-
-      if(!userRoleId){
-        return res.status(400).json({
-          error:true,
-          message:"User role not found."
-      })
-      }
-
-      const userRole = await Role.findById(userRoleId?.role_id);
-      if(!userRole){
-        return res.status(400).json({
-          error:true,
-          message:"User role not found."
-      })
-      }
-
-      if(userRole === 'artist'){
-        return res.status(400).json({
-          error:true,
-          artist:true,
-          message:"Your request has been approved. You are artist now."
-        })
-      }
-
-      if(!userRole === 'user'){
-        return res.status(400).json({
-          error:true,
-          message:"Unauthorized role."
-        })
-      }
-
-      const existingRequest = await ArtistRequest.findOne({ 'user_id': req.user._id, 'status': 'progress' }).populate('profile');
-
-      if(!existingRequest){
-        return res.status(400).json({
-          error:true,
-          message:'No request in progess yet.',
-        })
-      }
-
-      var {title, certificate} = req.body;
-
-      if (req.files) {
-        let fileUploadResponse = await uploadFilesToImagekit(req);
-
-        if(fileUploadResponse && fileUploadResponse.length > 0){
-          let certificateCopy = fileUploadResponse.find((item) => item.fieldName == 'certificate');
-          if(certificateCopy) certificate = certificateCopy.response;
-        }
-      }
-
-      if(title && certificate){
-        const previousCertificates = existingRequest.certificates && Array.isArray(existingRequest.certificates) ? existingRequest.certificates : []; 
-
-        previousCertificates.push({title,certificate});
-        
-        // Update the existing document`
-        const updatedRequest = await ArtistRequest.findOneAndUpdate(
-          { 'user_id': req.user._id, 'status': 'progress' },
-          { $set: {certificates:previousCertificates} },
-          { new: true }
-        );
-  
-        return res.status(200).json({
-          status: 200,
-          message: "Request updated successfully",
-          data: updatedRequest
-        });
-
-      }
-      else{
-        return res.status(400).json({
-          error:true,
-          message:'Bad request. Title and certificate are required.',
-        })
-      }
-      
-    }
-      catch(error){
-         res.status(500).json({
-          error:true,
-          message:"somthing went wrong please try again later."
-         })
-      }
-}
   
 exports.getAllArtistRequest = async (req,res) =>{
   try{
