@@ -3,7 +3,7 @@ const router = require("express").Router()
 const UserRoles = require('../../models/user_roles')
 
 const { setProfile, getProfile } = require('./profile')
-const { getArtistRequests, updateArtistRequest, getAllArtistRequest, addCertificates } = require('./artistsRequest')
+const { getArtistRequests, updateArtistRequest, getAllArtistRequest } = require('./artistsRequest')
 const { upload, uploadFilesToImagekit } = require("../../config/upload")
 const { getAddresses,addAddress } = require("./addresses")
 
@@ -15,7 +15,7 @@ router.post('/add-address',passport.authenticate('jwt',{session:false}),addAddre
 
 router.get('/getArtistRequests',passport.authenticate('jwt',{session:false}),getArtistRequests)
 router.post('/updateArtistRequest',passport.authenticate('jwt',{session:false}),upload.any('files'),updateArtistRequest)
-router.post('/artist-request/addCertificates',passport.authenticate('jwt',{session:false}),upload.any('files'),addCertificates)
+
 router.get('/getAllArtistRequest',passport.authenticate('jwt',{session:false}),getAllArtistRequest)
 
 router.post('/uploadDocument',passport.authenticate('jwt',{session:false}),upload.any('files'),async (req,res)=>{
