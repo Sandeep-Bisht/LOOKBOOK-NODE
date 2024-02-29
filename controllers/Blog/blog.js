@@ -48,7 +48,7 @@ module.exports = {
     },
     get_all_blog : async(req,res) => {
         try {
-          const blogs = await Blog.find().populate("category"); 
+          const blogs = await Blog.find({status:'published',forArtist:"false"}).populate("category"); 
 
           if(!blogs){
             return res.status(400).json({
@@ -106,12 +106,13 @@ module.exports = {
     },
     update_blog : async(req,res)=>{
     let data = {};
-      const {_id,title,slug,description,content,tags,category,forArtist} = req.body;
+      const {_id,title,slug,description,content,tags,category,forArtist,status} = req.body;
       data={
         _id:_id,
         title:title,
         slug:slug,
         description:description,
+        status:status,
         content:content,
         tags:tags,
         category:category,
